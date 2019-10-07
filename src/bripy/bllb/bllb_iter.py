@@ -10,16 +10,7 @@ from typing import Any, Callable, Iterable, List, Optional
 from IPython.core.display import HTML, display
 import pandas as pd
 
-try:
-    from bllb_logging import logger, DBG
-    from bllb import *
-except ImportError:
-    try:
-        from bllb.bllb_logging import logger, DBG
-        from bllb.bllb import *
-    except ImportError:
-        from ubrl.bllb.bllb_logging import logger, DBG
-        from ubrl.bllb.bllb import *
+from bripy.bllb.bllb_logging import logger, DBG
 
 
 def flatten(lists: Iterable[Iterable[Any]]) -> List[Any]:

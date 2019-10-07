@@ -1,0 +1,10 @@
+pytest
+coverage
+codecov
+Sphinx
+black
+mypy
+scripttest
+pytest-cov
+fpdf
+dominate

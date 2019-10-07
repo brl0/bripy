@@ -1,14 +1,8 @@
 """Various file parsers."""
 
 from pathlib import Path
-from typing import Optional
 import click
 import sys
-
-try:
-    from bllb_logging import *
-except ImportError:
-    from ubrl.bllb.bllb_logging import *
 
 
 @click.group()

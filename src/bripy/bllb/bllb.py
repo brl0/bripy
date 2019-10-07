@@ -4,13 +4,7 @@
 import sys
 import types
 
-try:
-    from bllb_logging import logger, DBG
-except ImportError:
-    try:
-        from bllb.bllb_logging import logger, DBG
-    except ImportError:
-        from ubrl.bllb.bllb_logging import logger, DBG
+from bripy.bllb.bllb_logging import logger, DBG
 
 
 def print_sysinfo():

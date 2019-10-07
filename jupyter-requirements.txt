@@ -1,0 +1,6 @@
+python-slugify
+datashader
+holoviews
+pdvega
+watermark
+ipympl

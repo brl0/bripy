@@ -10,16 +10,8 @@ from nltk.tokenize import wordpunct_tokenize
 from typing import List
 
 
-try:
-    from bllb_logging import logger, DBG
-    from bllb_str import *
-except ImportError:
-    try:
-        from bllb.bllb_logging import logger, DBG
-        from bllb.bllb_str import *
-    except ImportError:
-        from ubrl.bllb.bllb_logging import logger, DBG
-        from ubrl.bllb.bllb_str import *
+from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.bllb_str import *
 
 
 def remove_nltk_stopwords(s: str, punc: bool = True) -> List[str]:

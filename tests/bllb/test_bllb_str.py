@@ -8,10 +8,7 @@ from hypothesis.strategies import text
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 import pytest
 
-try:
-    from .context import *  # noqa
-except ImportError:
-    from context import *  # noqa
+from bripy.bllb.bllb_str import *
 
 DEFAULT_RUNS = 50
 
@@ -110,3 +107,8 @@ def test_pre():
 def test_trans():
     """Test make_trans_table with non-default options."""
     assert make_trans_table(tolower=False, toupper=True, repl_num=True)
+
+
+def test_hash():
+    """Test that hash of a known value works properly."""
+    assert hash_utf8("") == "d41d8cd98f00b204e9800998ecf8427e"

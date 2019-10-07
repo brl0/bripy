@@ -8,15 +8,7 @@ from hypothesis import given
 import hypothesis.strategies as st
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 
-try:
-    from .context import *  # noqa
-except ImportError:
-    from context import *  # noqa
-
-try:
-    from ubrl.bllb.bllb_iter import *
-except ImportError:
-    from bllb_iter import *
+from bripy.bllb.bllb_iter import *
 
 DEFAULT_RUNS = 50
 RANGES = [[*map(str, range(i))][::-1] for i in range(10)]

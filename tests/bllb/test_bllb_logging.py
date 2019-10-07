@@ -2,6 +2,7 @@
 # pylint: disable=unused-wildcard-import, undefined-variable
 
 import logging
+import os
 import sys
 from warnings import filterwarnings
 
@@ -9,23 +10,15 @@ from click.testing import CliRunner
 import pytest
 from scripttest import TestFileEnvironment as FileEnvironment
 
+from bripy.bllb.bllb_logging import (disable_logging, disable_std_logging,
+                                     main, setup_logging)
+
 try:
     import loguru
 except ImportError:
     pass
 
-try:
-    from .context import *  # noqa
-except ImportError:
-    from context import *  # noqa
-
-try:
-    from bllb_logging import disable_std_logging, main
-except ImportError:
-    from ubrl.bllb.bllb_logging import disable_std_logging, main
-
-
-SCRIPT_PATH = r"..\..\ubrl\bllb\bllb_logging.py"
+SCRIPT_PATH = r"..\..\..\src\bripy\bllb\bllb_logging.py"
 sys.path.insert(0, os.path.abspath(os.path.dirname(SCRIPT_PATH)))
 
 ENV = FileEnvironment(ignore_hidden=False)

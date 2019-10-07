@@ -19,16 +19,8 @@ import validators
 from w3lib.url import canonicalize_url
 from werkzeug.urls import url_fix
 
-try:
-    from bllb_str import hash_utf8
-except ImportError:
-    try:
-        from bllb.bllb_str import hash_utf8
-    except ImportError:
-        try:
-            from ubrl.bllb.bllb_str import hash_utf8
-        except ImportError:
-            from bllb import *
+from bripy.bllb.bllb_str import hash_utf8
+
 
 AnyStr = TypeVar("AnyStr", str, bytes)
 

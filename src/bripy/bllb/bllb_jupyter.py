@@ -2,10 +2,7 @@
 """bllb Jupyter common imports."""
 # pylint: disable=unused-wildcard-import, unused-import
 
-try:
-    from ubrl.bllb.bllb import *
-except ImportError:
-    from bllb import *
+from bripy.bllb.bllb import *
 
 from warnings import filterwarnings
 filterwarnings("ignore")

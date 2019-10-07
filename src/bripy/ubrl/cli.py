@@ -1,15 +1,6 @@
 """Command line interface for ubrl."""
 
-try:
-    from ubrl.ubrl import DNS, Server
-except Exception:
-    try:
-        from ubrl import DNS, Server
-    except Exception:
-        try:
-            from .ubrl import DNS, Server
-        except Exception:
-            from ubrl.ubrl.ubrl import DNS, Server
+from bripy.ubrl.ubrl import DNS, Server
 
 from typing import List
 import click
@@ -22,8 +13,7 @@ def main():
 
 
 @main.command(
-    help="| Pings target and returns count, target, ip, and True or False."
-)
+    help="| Pings target and returns count, target, ip, and True or False.")
 @click.argument("target")
 @click.option("--count", default=1, help="Number of results to collect.")
 @click.option("--timeout", default=1, help="Seconds to allow for response.")

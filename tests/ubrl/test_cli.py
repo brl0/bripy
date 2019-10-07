@@ -3,10 +3,7 @@
 import pytest
 from scripttest import TestFileEnvironment as FileEnvironment
 
-try:
-    from .context import DNS
-except ImportError:
-    from context import DNS
+from .context import DNS
 
 env = FileEnvironment(ignore_hidden=False)
 

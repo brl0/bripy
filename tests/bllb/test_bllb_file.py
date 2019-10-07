@@ -4,15 +4,7 @@ from pathlib import Path
 
 import pytest
 
-try:
-    from .context import *  # noqa
-except ImportError:
-    from context import *  # noqa
-
-try:
-    from ubrl.bllb.bllb_file import *
-except ImportError:
-    from bllb_file import *
+from bripy.bllb.bllb_file import *
 
 TEST_TEXT = "\n".join(
     [" ".join([*map(str, range(i))][::-1]) for i in range(10)]).strip()
@@ -44,3 +36,11 @@ def test_gen_lines(tmp_file):
 def test_try_read(tmp_file):
     assert TEST_TEXT == "".join(try_read(tmp_file))
     assert [*try_read('')] == ['']
+
+
+def test_lines():
+    """Test various line reading functions."""
+    line1a = list(gen_lines(__file__))[0].split("\n")[0]
+    line1b = get_lines(__file__, 0)[0]
+    line1c = list(try_read(__file__))[0].split("\n")[0]
+    assert line1a == line1b == line1c

@@ -9,7 +9,15 @@ Add a short description here!
 Description
 ===========
 
-A longer description of your project goes here...
+URL helper library.
+
+This utility library is primarily based around three classes, URL, Server, and DNS.
+
+There is a very basic cli for some functions.
+
+Project uses black for formatting, and uses type annotations for mypy.
+
+Pytest is used for testing, and pytest-cov plugin for coverage reporting.
 
 
 Note

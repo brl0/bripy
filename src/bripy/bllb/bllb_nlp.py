@@ -6,19 +6,9 @@ from json import loads
 from typing import Iterable, List, Set, Tuple
 from urllib.request import urlopen
 
-try:
-    from bllb_logging import logger, DBG
-    from bllb_iter import functools_reduce_iconcat
-    from bllb_str import *
-except ImportError:
-    try:
-        from bllb.bllb_logging import logger, DBG
-        from bllb.bllb_iter import functools_reduce_iconcat
-        from bllb.bllb_str import *
-    except ImportError:
-        from ubrl.bllb.bllb_logging import logger, DBG
-        from ubrl.bllb.bllb_iter import functools_reduce_iconcat
-        from ubrl.bllb.bllb_str import *
+from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.bllb_iter import functools_reduce_iconcat
+from bripy.bllb.bllb_str import *
 
 
 def get_en_stopwords() -> Set[str]:

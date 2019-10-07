@@ -9,10 +9,8 @@ import pytest
 
 from fpdf import FPDF
 
-try:
-    from ubrl.bllb.bllb_parsers import (HTML_Parser, PDF_Parser, html2txt, pdf2txt)
-except:
-    from bllb_parsers import HTML_Parser, PDF_Parser, html2txt, pdf2txt
+from bripy.bllb.bllb_parsers import (HTML_Parser, PDF_Parser, html2txt,
+                                     pdf2txt)
 
 TEST_TEXT = 'This is test text.'
 
