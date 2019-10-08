@@ -2,41 +2,27 @@
 # -*- coding: utf-8 -*-
 """Console script for daskerator."""
 
-import sys
+from concurrent.futures import ThreadPoolExecutor
+import datetime as dt
+from functools import partial
+from hashlib import md5
+import inspect
+from operator import methodcaller
 import os
+from pathlib import Path
+from pprint import pprint as pp
+from queue import Queue
+import sys
+from threading import Thread
 import time
 from time import sleep
 
-import inspect
-from hashlib import md5
-from pathlib import Path
-from operator import methodcaller
-from itertools import chain
-import datetime as dt
-
 import click
-import attr
-from tqdm import tqdm
-import numpy as np
-
-from toolz import curry
-from functools import partial
-
-import pandas as pd
-import dask.dataframe as dd
-import dask.bag as db
 from distributed import Client, LocalCluster
+import pandas as pd
 
-from queue import Queue
-from threading import Thread
-from concurrent.futures import ThreadPoolExecutor
-
-#bllb_path = str(Path(r"../../../code/python/bllb").resolve())
-#sys.path.insert(0, bllb_path)
-from bripy.bllb.bllb_logging import *
-
+from bripy.bllb.bllb_logging import setup_logging
 from bripy.bllb.bllb_str import hash_utf8
-from pprint import pprint as pp
 
 LOG_ON = False
 LOG_LEVEL = "WARNING"
@@ -64,7 +50,7 @@ def md5_blocks(path, blocksize=1024 * 2048) -> str:
                 f'Error trying to hash item: {str(path)}\nError:\n{error}')
             return
     else:
-        dbg(f'Item is a directory and will not be hashed.  {str(path)}')
+        log.debug(f'Item is a directory and will not be hashed.  {str(path)}')
         return
 
 
@@ -141,16 +127,16 @@ def unloadq(q, stop, limit=2000, rest=.1, check=100):
     while True and ((i and not stop()) or q.qsize()):
         loops += 1
         if loops % check == 0:
-            print(i, loops, len(results))
+            log.debug(i, loops, len(results))
         if q.qsize():
             x = q.get()
-            #print(x)
+            log.debug(x)
             results.append(x)
             i = min(i + 1, limit)
         else:
             i -= 1
             if i % check == 0:
-                print(i)
+                log.debug(i)
             sleep(rest)
     return results
 
@@ -204,7 +190,7 @@ def iterq(q):
         yield q.get()
 
 
-def proc_paths(basepaths, output, opt_md5=True):
+def proc_paths(basepaths, opt_md5=True):
     q = Queue()
     remote_q = client.scatter(q)
     q1, q2 = multiplex(2, remote_q)
@@ -271,18 +257,18 @@ def main(basepaths, output, file, md5, verbose, args):
     log_on = LOG_ON
     log_level = LOG_LEVEL
     if verbose:
-        print('verbose')
         log_on = True
         log_level = max(4 - verbose, 1) * 10
     global log
     log = start_log(log_on, log_level)
+    log.info(f'verbose: {verbose}')
     log.warning(f"\nlogs enabled: {log_on}\nlog_level: {log_level}")
     log.debug("basepaths: {}".format(basepaths))
     log.debug("output: {}".format(output))
     log.debug('{}'.format(str(type(file))))
     log.debug(f'Optional md5 hash: {md5}')
     log.debug('{}'.format(args))
-    time.sleep(0.05)  # Sleep to let logging initiate
+    time.sleep(0.05)  # Sleep to let logging initialize
 
     global cluster, client
     cluster = LocalCluster(processes=True)
@@ -300,20 +286,14 @@ def main(basepaths, output, file, md5, verbose, args):
     log.debug(client)
 
     try:
-        result = proc_paths(basepaths, output, opt_md5=md5)
-        #print(result)
-        log.debug(str(type(result)), len(result))
-        pp(result)
-        #print(result.info())
-        #print(result.describe())
-        """pp(result.info())
+        result = proc_paths(basepaths, opt_md5=md5)
+        log.debug(f'{str(type(result))}, {str(len(result))}')
         fields = ['path', 'st_size']
         if md5:
             fields.append('md5')
-        pp(result.loc[:, fields])"""
-    except Exception as error:
-        log.warning(f'{error}')
-        #print('No results')
+        pp(result.loc[:, fields])
+    except Exception:
+        log.exception("FAIL")
         return error
 
     elapsed = time.perf_counter() - s
