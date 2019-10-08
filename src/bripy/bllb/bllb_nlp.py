@@ -6,8 +6,7 @@ from json import loads
 from typing import Iterable, List, Set, Tuple
 from urllib.request import urlopen
 
-from bripy.bllb.bllb_logging import logger, DBG
-from bripy.bllb.bllb_iter import functools_reduce_iconcat
+from bripy.bllb.bllb_iter import reduce_iconcat
 from bripy.bllb.bllb_str import *
 
 
@@ -63,7 +62,7 @@ class snowball:
     stem = snow.stemWord
 
 
-def ngram_generator(iterable, n: int) -> List[Tuple(str)]:
+def ngram_generator(iterable, n: int) -> List[Tuple[str]]:
     """Generate ngrams."""
     return [
         *zip(*((islice(seq, i, None)
@@ -73,7 +72,7 @@ def ngram_generator(iterable, n: int) -> List[Tuple(str)]:
 
 def word_lists_counter(word_lists: Iterable[Iterable[str]]):
     """Count words in a list of words."""
-    word_list = functools_reduce_iconcat(l for l in word_lists)
+    word_list = reduce_iconcat(l for l in word_lists)
     c = Counter(word_list)
     return c.most_common()
 
