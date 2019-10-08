@@ -264,7 +264,7 @@ def pre(text: str, casefold: bool = True, camel: bool = True) -> str:
 MIN_WORD_LEN = 3
 
 
-def tok(text: str, exp: re.Pattern = make_exp(MIN_WORD_LEN)) -> List[str]:
+def tok(text: str, exp: Any = make_exp(MIN_WORD_LEN)) -> List[str]:
     """Tokenize string."""
     return exp.findall(text)
 

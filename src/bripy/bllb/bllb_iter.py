@@ -30,14 +30,14 @@ def reduce_iconcat(a: Iterable[Any]) -> List[Any]:
 cat: Callable[[Iterable[str]], str] = "".join
 
 
-def striter(iterable: Iterable, item_delim: str = "\n",
+def striter(iterable: Iterable[Any], item_delim: str = "\n",
             list_delim: str = "\n") -> str:
     """Concatenate items in an iterable into a string."""
     it = listerine(iterable)
     return item_delim.join(map(str, it)) + list_delim
 
 
-def listerine(iterable: Iterable) -> List[Any]:
+def listerine(iterable: Iterable[Any]) -> List[Any]:
     """Wrap input into list."""
     it = iterable
     if isinstance(it, str):
@@ -74,7 +74,7 @@ def listerine(iterable: Iterable) -> List[Any]:
     return list(it)
 
 
-def ppiter(iterable: Iterable) -> bool:
+def ppiter(iterable: Iterable[Any]) -> bool:
     """Pretty print an iterable or other object."""
     logger.debug(f"type: {type(iterable)}")
     if isinstance(iterable, set):
@@ -89,7 +89,7 @@ def ppiter(iterable: Iterable) -> bool:
     pprint(iterable)
 
 
-def priter(iterable: Iterable) -> bool:
+def priter(iterable: Iterable[Any]) -> bool:
     """Recursively print iterable."""
     try:
         if isinstance(iterable, pd.DataFrame):
@@ -113,7 +113,7 @@ def priter(iterable: Iterable) -> bool:
     return True
 
 
-def ppriter(iterable: Iterable) -> bool:
+def ppriter(iterable: Iterable[Any]) -> bool:
     """Pretty print an iterable or other object."""
     print(f"type: {type(iterable)}")
     if isinstance(iterable, pd.DataFrame):

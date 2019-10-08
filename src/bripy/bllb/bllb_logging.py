@@ -25,7 +25,7 @@ def setup_logging(
         std_lib: bool = False,
         loguru_enqueue: bool = False,
 ) -> object:
-    """Enable or disable logging. Defaults to INFO level.
+    """Enable or disable logging. Defaults to DEBUG level.
 
     Levels: {"DEBUG": 10, "INFO": 20, "WARNING": 30,
              "ERROR": 40, "CRITICAL": 50, "NOTSET" : 0}
