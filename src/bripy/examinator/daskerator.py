@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Console script for daskerator."""
 
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import datetime as dt
 from functools import partial
 from hashlib import md5
@@ -213,7 +213,7 @@ def proc_paths(basepaths, opt_md5=True):
             alive = sum([_q.qsize() for _q in qs])
             if alive:
                 i = min(i + 1, ilimit)
-                log.debug(alive, i)
+                log.debug(f'{alive}, {i}')
             else:
                 i -= 1
                 log.debug(f'i: {i}')

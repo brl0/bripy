@@ -162,3 +162,5 @@ test-output/
 .noseids
 
 .mutmut-cache
+
+dask-worker-space/
