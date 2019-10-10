@@ -6,12 +6,12 @@ from multiprocessing import (Process, JoinableQueue as Queue, freeze_support)
 from time import sleep
 import sys
 
-from bripy.bllb.bllb_logging import setup_logging
+from bripy.bllb.bllb_logging import get_dbg, setup_logging
 
 EXECUTOR = ProcessPoolExecutor
 
-logger = setup_logging(True, "INFO")
-DBG = logger.opt(lazy=True).debug
+logger = setup_logging(True, "DEBUG", loguru_enqueue=True)
+DBG = get_dbg(logger)
 
 basepath = '.'
 NUMBER_OF_PROCESSES = 4

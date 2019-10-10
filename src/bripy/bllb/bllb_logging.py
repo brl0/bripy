@@ -23,14 +23,14 @@ def setup_logging(
         enable: bool = True,
         lvl: Optional[Union[int, str]] = None,
         std_lib: bool = False,
-        loguru_enqueue: bool = False,
+        loguru_enqueue: bool = True,
 ) -> object:
     """Enable or disable logging. Defaults to DEBUG level.
 
     Levels: {"DEBUG": 10, "INFO": 20, "WARNING": 30,
              "ERROR": 40, "CRITICAL": 50, "NOTSET" : 0}
     """
-    assert not (std_lib and loguru_enqueue)
+    #assert not (std_lib and loguru_enqueue)
     loguru_error = False
     if lvl is None:
         if enable:
@@ -59,6 +59,14 @@ def setup_logging(
                  f"\tLevel:\t{lvl}\n"
                  f"\t{std_lib}")  # noqa
     return logger
+
+
+def get_dbg(logger):
+    if logger:
+        if isinstance(logger, logging.Logger):
+            return logger.debug
+        return logger.opt(lazy=True).debug
+    return print
 
 
 def enable_loguru(name: str = "bllb",
@@ -147,4 +155,4 @@ else:
         logger
     except Exception:
         logger = setup_logging(lvl=DEFAULT_LVL)
-    DBG = logger.debug
+    DBG = get_dbg(logger)
