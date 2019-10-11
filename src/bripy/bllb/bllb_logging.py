@@ -88,7 +88,7 @@ def enable_loguru(name: str = "bllb",
         enqueue=enqueue,
     )
     logger.enable(name)
-    logger.info(f"Imported loguru.\n\t Level: {lvl}")
+    logger.info(f"Imported loguru.\n\t Level: {lvl}\n\t enqueue: {enqueue}")
     filterwarnings("default")
     return logger
 
