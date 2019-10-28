@@ -4,6 +4,7 @@
 # TODO:
     # Set/change level functions
     # File output
+    # Create standard interface for lazy evaluation
 """
 
 import logging
@@ -74,7 +75,7 @@ def enable_loguru(name: str = "bllb",
                   enqueue: bool = True) -> object:
     """Enable loguru or return new loguru logger."""
     from loguru import logger
-
+    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
     logger.remove()
     logger.add(
         sys.stdout,
@@ -153,6 +154,6 @@ if __name__ == "__main__":  # pragma: no cover
 else:
     try:
         logger
-    except Exception:
+    except NameError:
         logger = setup_logging(lvl=DEFAULT_LVL)
     DBG = get_dbg(logger)

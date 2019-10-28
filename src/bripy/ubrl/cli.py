@@ -1,9 +1,10 @@
 """Command line interface for ubrl."""
 
-from bripy.ubrl.ubrl import DNS, Server
-
 from typing import List
+
 import click
+
+from bripy.ubrl.ubrl import DNS, Server
 
 
 @click.group()

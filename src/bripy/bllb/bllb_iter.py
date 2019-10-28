@@ -177,3 +177,17 @@ def pdinfo(*dfs: pd.DataFrame) -> bool:
         df_peek = pd.concat([df.head(peek), df.sample(peek), df.tail(peek)])
         pdhtml(df_peek, table_id=f'table_{idx}')
     return True
+
+
+def ppobj(obj: object) -> None:
+    for key in dir(obj):
+        if str(key).startswith('__'):
+            continue
+        print('\n', key, ':')
+        item = getattr(obj, key)
+        if not item:
+            continue
+        if isinstance(item, str) or not len(item):
+            pprint(item)
+        else:
+            pprint([*enumerate(item)])

@@ -5,11 +5,12 @@ from ipaddress import IPv4Address, IPv6Address, ip_address
 from pathlib import PurePath
 import re
 import socket
-from typing import Set, TypeVar
+from typing import Dict, Set, TypeVar
 from urllib.parse import parse_qs, unquote_plus, urlparse, urlsplit, urlunsplit
 from urllib.request import urlopen
 
 import attr
+from boltons import urlutils
 from dns.resolver import Resolver
 from multiping import MultiPing
 import requests
@@ -20,6 +21,7 @@ from w3lib.url import canonicalize_url
 from werkzeug.urls import url_fix
 
 from bripy.bllb.bllb_str import hash_utf8
+from bripy.bllb.bllb_logging import logger, DBG
 
 __all__ = ['URL', 'DNS', 'Server']
 
@@ -32,10 +34,12 @@ class URL:
 
     url = attr.ib()
     parse = None
+    bolton = None
 
     def __attrs_post_init__(self) -> None:
         """Initialize parsed url object."""
         self.parse = urlparse(self.url)
+        self.bolton = urlutils.URL(self.url)
 
     def __repr__(self) -> str:
         """Return url as repr."""
@@ -135,19 +139,18 @@ class URL:
         return canonicalize_url(  # rebuild url with blank scheme
             urlunsplit((scheme, netloc, path, query, fragment)))
 
-    @property
-    def check(self):
+    def check(self) -> bool:
         """Various checks for URL."""
         url = self.url
-        logger.debug('validating url: {}'.format(url))
+        DBG('validating url: {}'.format(url))
         if not validators.url(url):
             logger.info('url did not validate')
             return False
-        logger.debug('checking dns')
+        DBG('checking dns')
         if not DNS().validate_domain(self.domain):
             logger.info('unable to resolve dns')
             return False
-        logger.debug('requesting http head')
+        DBG('requesting http head')
         try:
             r = requests.head(url, allow_redirects=True)
             r.raise_for_status()
@@ -155,13 +158,16 @@ class URL:
             logger.info('http head request failed', exc_info=True)
             return False
         else:
-            logger.info('no connection error')
+            DBG('no connection error')
             if r.ok:
                 return True
             else:
                 logger.info('response not ok: {}'.format(r))
                 return False
 
+    @property
+    def query_params(self) -> Dict[str, str]:
+        return self.bolton.qp
 
 @attr.s(repr=False)
 class Server:
@@ -199,22 +205,20 @@ class Server:
 
     def check_service_v4(self, port: int, timeout: int) -> bool:
         """Check that IPv4 TCP server responds on port within timeout."""
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(timeout)
-        result = sock.connect_ex((self.ip, port))
-        if result:  # noqa
-            return False
-        else:  # noqa
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(timeout)
+            result = sock.connect_ex((self.ip, port))
+            if result:
+                return False
             return True
 
     def check_service_v6(self, port: int, timeout: int) -> bool:
         """Check that IPv6 TCP server responds on port within timeout."""
-        sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-        sock.settimeout(timeout)
-        result = sock.connect_ex((self.ip, port, 0, 0))
-        if result:  # noqa
-            return False
-        else:  # noqa
+        with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as sock:
+            sock.settimeout(timeout)
+            result = sock.connect_ex((self.ip, port, 0, 0))
+            if result:
+                return False
             return True
 
     def ping(self, tries=1, timeout=1) -> bool:

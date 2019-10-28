@@ -9,6 +9,7 @@ from urllib.request import urlopen
 from bripy.bllb.bllb_iter import reduce_iconcat
 from bripy.bllb.bllb_str import *
 
+LANGUAGE = "english"
 
 def get_en_stopwords() -> Set[str]:
     """Stopwords from 'https://github.com/6/stopwords-json'."""
@@ -90,3 +91,20 @@ def get_vocab(docs):
             get_tokens(doc))  # Counter update accumulates without return
     print('vocab size: ', len(vocab))
     return vocab
+
+
+def get_sumy(text: str, sentences_count: int = 10):
+    from sumy.parsers.plaintext import PlaintextParser
+    from sumy.nlp.tokenizers import Tokenizer
+    from sumy.summarizers.lsa import LsaSummarizer as Summarizer
+    from sumy.nlp.stemmers import Stemmer
+    from sumy.utils import get_stop_words
+
+    parser = PlaintextParser.from_string(text, Tokenizer(LANGUAGE))
+    stemmer = Stemmer(LANGUAGE)
+    summarizer = Summarizer(stemmer)
+    summarizer.stop_words = get_stop_words(LANGUAGE)
+    summary = summarizer(parser.document, sentences_count)
+    summary = [str(sentence) for sentence in summary]
+    summary = ' '.join(summary)
+    return summary

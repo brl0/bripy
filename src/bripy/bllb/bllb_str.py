@@ -473,3 +473,8 @@ def pad_punctuation_w_space(text: str) -> str:
     # code for removing single characters
     result = re.sub(r"\b[a-zA-Z]\b", "", result)
     return result
+
+
+stripper = lambda s: s.strip(string.whitespace + '\xa0')
+
+fix_cr = lambda s: s.replace('\r\n', '\n').replace('\r', '\n')

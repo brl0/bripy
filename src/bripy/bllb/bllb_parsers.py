@@ -1,21 +1,26 @@
 """Various file parsers."""
 
 from pathlib import Path
-import click
 import sys
+from typing import Union
 
+import click
+
+from bripy.bllb.bllb_str import stripper, fix_cr
 
 @click.group()
 def main() -> int:  # pragma: no cover
     """Group commands."""
     return 0  # noqa
 
-
 class HTML_Parser:
     """Class to hold HTML functions."""
 
     from bs4 import BeautifulSoup
     from bs4.element import Comment
+
+    html_parsers = ['lxml', 'html5lib', 'html.parser']
+    HTML_PARSER = html_parsers[0]
 
     @classmethod
     def tag_visible(cls, element) -> bool:
@@ -38,16 +43,41 @@ class HTML_Parser:
         return True
 
     @classmethod
-    def text_from_html(cls, body: str) -> str:
+    def text_from_html(cls, body: Union[BeautifulSoup, str]) -> str:
         """
         Extract text from visible elements in HTML document.
 
-        https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
+        https://stackoverflow.com/questions/1936466
         """
-        soup = cls.BeautifulSoup(body, "html.parser")
+        if isinstance(body, cls.BeautifulSoup):
+            soup = body
+        else:
+            soup = cls.BeautifulSoup(body, cls.HTML_PARSER)
         texts = soup.findAll(text=True)
-        texts = list(filter(cls.tag_visible, texts))
+        texts = filter(cls.tag_visible, texts)
+        texts = map(stripper, texts)
+        texts = filter(len, texts)
         return "\n".join(texts)
+
+    @classmethod
+    def all_text(cls, body: Union[BeautifulSoup, str]) -> str:
+        """Extract text from webpage.
+
+        https://stackoverflow.com/questions/328356
+        """
+        if isinstance(body, cls.BeautifulSoup):
+            soup = body
+        else:
+            soup = cls.BeautifulSoup(body, cls.HTML_PARSER)
+        # kill all script and style elements
+        for script in soup(["script", "style"]):
+            script.replace_with("<br>")  # rip it out
+        text = soup.get_text("<br>").replace('<br>', '\n')
+        text = fix_cr(text)
+        # Strip whitespace, including non-breaking spaces '\xa0'
+        text = '\n'.join([stripper(line) for line in text.split('\n')
+                          if stripper(line)])
+        return text
 
 
 class PDF_Parser:
