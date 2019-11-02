@@ -43,6 +43,10 @@ class URL:
 
     def __repr__(self) -> str:
         """Return url as repr."""
+        return f"URL({self.url})"
+
+    def __str__(self) -> str:
+        """Return str value."""
         return self.url
 
     @property
@@ -178,6 +182,10 @@ class Server:
 
     def __repr__(self) -> str:
         """Return target as repr."""
+        return f"Server({self.target})"
+
+    def __str__(self) -> str:
+        """Return str value."""
         return self.target
 
     def __attrs_post_init__(self) -> None:
@@ -265,6 +273,10 @@ class DNS:
 
     def __repr__(self) -> str:
         """Return list of nameservers as repr."""
+        return f"DNS({str(self.nameservers)})"
+
+    def __str__(self) -> str:
+        """Return str value."""
         return str(self.nameservers)
 
     def __attrs_post_init__(self) -> None:
