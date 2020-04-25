@@ -11,9 +11,10 @@ from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.exc import IntegrityError
 from tqdm import tqdm
 
-from bripy.examinator.examinator import get_stat, md5_blocks
+from bripy.bllb.fs import get_stat
+from bripy.bllb.file import md5_blocks
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents'
+basepath = r'C:\Users\b_r_l\Downloads'
 output_db = r'fileinfo.db'
 database = r'tracking.db'
 

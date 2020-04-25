@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 """bllb file helpers."""
 
+from hashlib import md5
 from itertools import islice
+from pathlib import Path
+
 
 from bripy.bllb.bllb_logging import logger, DBG
 
@@ -41,23 +44,43 @@ def try_read(filename):  # pragma: no cover
                     else:
                         break
                 else:
-                    logger.debug("NOT True!?!")  # while else
-                logger.debug("try complete")
+                    DBG("NOT True!?!")  # while else
+                DBG("try complete")
             except Exception as error:  # try exception, may be done
-                logger.debug("exception: ", error)
+                DBG("exception: ", error)
                 # break
             else:  # except else, no errors
-                logger.debug("no problems, except else")
+                DBG("no problems, except else")
             finally:  # done for each try
-                logger.debug("finally")
+                DBG("finally")
                 pass
     except Exception:  # error opening
-        logger.debug("error opening")
+        DBG("error opening")
         yield ''
         pass
     else:  # no error opening
-        logger.debug("no error opening")
+        DBG("no error opening")
         pass
     finally:
-        logger.debug("finally after try open")
+        DBG("finally after try open")
         pass
+
+
+def md5_blocks(path, blocksize=1024 * 2048) -> str:
+    path = Path(path)
+    if not path.is_dir():
+        try:
+            hasher = md5()
+            with path.open('rb') as file:
+                block = file.read(blocksize)
+                while len(block) > 0:
+                    hasher.update(block)
+                    block = file.read(blocksize)
+            return hasher.hexdigest()
+        except Exception as error:
+            logger.warning(
+                f'Error trying to hash item: {str(path)}\nError:\n{error}')
+            return
+    else:
+        DBG(f'Item is a directory and will not be hashed.  {str(path)}')
+        return
