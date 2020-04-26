@@ -7,7 +7,7 @@ from pathlib import Path
 
 from bripy.bllb.file import md5_blocks
 from bripy.bllb.bllb_str import hash_utf8
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 
 def get_stat(path, opt_md5=True, opt_pid=False) -> dict:

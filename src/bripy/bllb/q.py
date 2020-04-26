@@ -2,7 +2,7 @@ from queue import Queue
 from threading import Thread
 from time import sleep
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 def unloadq(q, stop, limit=2000, rest=.1, check=100):
     i = limit

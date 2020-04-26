@@ -6,7 +6,7 @@ from itertools import islice
 from pathlib import Path
 
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 
 def gen_lines(filename: str):

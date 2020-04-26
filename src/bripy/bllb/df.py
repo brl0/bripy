@@ -5,7 +5,7 @@ from typing import Optional
 from IPython.core.display import HTML, display
 import pandas as pd
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 
 def pdhtml(df: pd.DataFrame, table_id: Optional[str] = 'table'):

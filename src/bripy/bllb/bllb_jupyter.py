@@ -2,7 +2,7 @@
 """bllb Jupyter common imports."""
 # pylint: disable=unused-wildcard-import, unused-import
 
-from bripy.bllb.bllb_logging import logger, DBG, setup_logging
+from bripy.bllb.logging import logger, DBG, setup_logging
 from bripy.bllb.bllb import get_imports
 
 from warnings import filterwarnings
@@ -98,8 +98,8 @@ try:
     from bllb_jupyter import *
     from bllb_logging import setup_logging
 except ImportError:
-    from ubrl.bllb.bllb_jupyter import *
-    from ubrl.bllb.bllb_logging import setup_logging
+    from bripy.bllb.bllb_jupyter import *
+    from bripy.bllb.logging import setup_logging
 
 logger = setup_logging(enable=LOGS, lvl=LOG_LEVEL, std_lib=True)
 DBG = logger.debug

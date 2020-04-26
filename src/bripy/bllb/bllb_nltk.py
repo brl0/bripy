@@ -10,7 +10,7 @@ from nltk.tokenize import wordpunct_tokenize
 from typing import List
 
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 from bripy.bllb.bllb_str import *
 
 

@@ -11,7 +11,7 @@ from typing import (Any, Collection, Dict, Iterator, List, Mapping)
 from unicodedata import normalize
 from urllib.parse import quote_plus
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 
 def hash_utf8(text: str) -> str:

@@ -3,7 +3,7 @@
 
 import sys
 
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 
 def print_sysinfo():

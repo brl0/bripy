@@ -5,7 +5,7 @@ from multiprocessing import (Process, JoinableQueue as Queue, freeze_support)
 from time import sleep
 import sys
 
-from bripy.bllb.bllb_logging import get_dbg, setup_logging
+from bripy.bllb.logging import get_dbg, setup_logging
 
 logger = setup_logging(True, "INFO", loguru_enqueue=True)
 DBG = get_dbg(logger)

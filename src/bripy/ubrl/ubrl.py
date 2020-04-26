@@ -21,7 +21,7 @@ from w3lib.url import canonicalize_url
 from werkzeug.urls import url_fix
 
 from bripy.bllb.bllb_str import hash_utf8
-from bripy.bllb.bllb_logging import logger, DBG
+from bripy.bllb.logging import logger, DBG
 
 __all__ = ['URL', 'DNS', 'Server']
 
