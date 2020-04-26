@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from bripy.bllb.bllb_file import *
+from bripy.bllb.file import *
 
 TEST_TEXT = "\n".join(
     [" ".join([*map(str, range(i))][::-1]) for i in range(10)]).strip()

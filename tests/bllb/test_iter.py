@@ -1,54 +1,41 @@
-"""Test bllb_iter."""
-
+"""Test bllb.iter."""
 from typing import List
-
-import pandas as pd
 
 from hypothesis import given
 import hypothesis.strategies as st
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 
-from bripy.bllb.bllb_iter import *
-
-DEFAULT_RUNS = 50
-RANGES = [[*map(str, range(i))][::-1] for i in range(10)]
-
-FUNCTIONS = {
-    striter: DEFAULT_RUNS,
-    listerine: DEFAULT_RUNS,
-    ppiter: DEFAULT_RUNS,
-    priter: DEFAULT_RUNS,
-    pdinfo: DEFAULT_RUNS,
-    ppriter: DEFAULT_RUNS,
-}
-
-for func, runs in FUNCTIONS.items():
-    auto_pytest_magic(func, auto_runs_=runs)
+from bripy.bllb.iter import *
+from conftest import DEFAULTS
 
 
-def test_flatten():
+# FUNCTIONS = {
+#     striter: DEFAULTS.RUNS,
+#     listerine: DEFAULTS.RUNS,
+#     ppiter: DEFAULTS.RUNS,
+# }
+
+# for func, runs in FUNCTIONS.items():
+#     auto_pytest_magic(func, auto_runs_=runs)
+
+# auto_pytest_magic(striter, auto_runs_=DEFAULTS.RUNS)
+# auto_pytest_magic(listerine, auto_runs_=DEFAULTS.RUNS)
+# auto_pytest_magic(ppiter, auto_runs_=DEFAULTS.RUNS)
+
+def test_flatten(RANGES):
     """Test len of flatten list matches sum of lens."""
     assert len(flatten(RANGES)) == sum(map(len, RANGES))
 
 
-def test_reduce_iconcat():
+def test_reduce_iconcat(RANGES):
     """Test len of concatenated list matches sum of lens."""
     assert len(reduce_iconcat(RANGES)) == sum(map(len, RANGES))
 
 
-def test_priter_pandas():
+def test_ppiter(RANGES):
     """Simply execute function."""
-    assert priter(pd.DataFrame(RANGES))
-
-
-def test_pdinfo():
-    """Simply execute function."""
-    assert pdinfo(pd.DataFrame(RANGES))
-
-
-def test_pdhtml():
-    """Simply execute function."""
-    assert pdhtml(pd.DataFrame(RANGES))
+    ppiter(RANGES)
+    assert True
 
 
 @given(st.lists(st.text()))
@@ -59,7 +46,7 @@ def test_cat(strings: List[str]):
     assert result == "".join(strings)
 
 
-@auto_pytest(test_cat, auto_runs_=DEFAULT_RUNS)
+@auto_pytest(test_cat, auto_runs_=DEFAULTS.RUNS)
 def test_cat_auto(test_case):
     """Auto generate tests for test_cat."""
     test_case()
