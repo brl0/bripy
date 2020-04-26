@@ -1,3 +1,3 @@
 """Examinator module."""
 
-from .daskerator import *
+from .examinator import *

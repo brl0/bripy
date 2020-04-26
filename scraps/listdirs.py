@@ -85,8 +85,10 @@ def main():
         process.close()
 
     for process in processes:
-        process.join()
-
+        try:
+            process.join()
+        except ValueError:
+            ...
 
     print(f'done_q qsize: {done_q.qsize()}')
     sleep(0.05)
