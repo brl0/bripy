@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 
 from bripy.bllb.logging import setup_logging
 from bripy.bllb.file import md5_blocks
-from bripy.bllb.fs import get_stat, get_dir, glob_paths
+from bripy.bllb.fs import get_stat, get_dir, rglob
 
 
 LOG_ON = False
@@ -36,7 +36,7 @@ def start_log(enable=True, lvl='WARNING'):
 
 def main():
     with EXECUTOR(max_workers=WORKERS) as executor:
-        futures = executor.map(get_stat, glob_paths(basepath))
+        futures = executor.map(get_stat, rglob(basepath))
     results = [result for result in futures]
     df = pd.DataFrame(results)
     pp(df)

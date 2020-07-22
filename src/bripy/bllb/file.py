@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """bllb file helpers."""
-
 from hashlib import md5
 from itertools import islice
 from pathlib import Path
 
+from fsspec import get_fs_token_paths
 
 from bripy.bllb.logging import logger, DBG
 
@@ -83,4 +83,23 @@ def md5_blocks(path, blocksize=1024 * 2048) -> str:
             return
     else:
         DBG(f'Item is a directory and will not be hashed.  {str(path)}')
+        return
+
+
+def md5_blocks_fs(path, blocksize=1024 * 2048) -> str:
+    fs, token, paths = get_fs_token_paths(path)
+    if fs.isdir(path):
+        DBG(f'Item is a directory and will not be hashed.  {str(path)}')
+        return
+    try:
+        hasher = md5()
+        with fs.open(path, 'rb') as file:
+            block = file.read(blocksize)
+            while len(block) > 0:
+                hasher.update(block)
+                block = file.read(blocksize)
+        return hasher.hexdigest()
+    except Exception as error:
+        logger.warning(
+            f'Error trying to hash item: {str(path)}\nError:\n{error}')
         return
