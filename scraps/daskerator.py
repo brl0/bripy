@@ -22,7 +22,7 @@ from distributed import Client, LocalCluster
 import pandas as pd
 
 from bripy.bllb.logging import setup_logging
-from bripy.bllb.bllb_str import hash_utf8
+from bripy.bllb.str import hash_utf8
 
 LOG_ON = False
 LOG_LEVEL = "WARNING"

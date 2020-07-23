@@ -6,7 +6,7 @@ from typing import Union
 
 import click
 
-from bripy.bllb.bllb_str import stripper, fix_cr
+from bripy.bllb.str import stripper, fix_cr
 
 @click.group()
 def main() -> int:  # pragma: no cover

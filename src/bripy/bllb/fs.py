@@ -9,7 +9,7 @@ from fsspec import get_fs_token_paths
 import pandas as pd
 
 from bripy.bllb.file import md5_blocks, md5_blocks_fs
-from bripy.bllb.bllb_str import hash_utf8
+from bripy.bllb.str import hash_utf8, multisplit
 from bripy.bllb.logging import logger, DBG
 
 
@@ -61,6 +61,7 @@ def get_stat_fs(path, opt_md5=False) -> dict:
     info.update({"protocol": protocol})
     info.update({"created": pd.to_datetime(info["created"], unit="s")})
     info.update({"mtime": pd.to_datetime(info["mtime"], unit="s")})
+    info.update({"words": set(multisplit(path))})
     if opt_md5:
         if not fs.isdir(path):
             try:

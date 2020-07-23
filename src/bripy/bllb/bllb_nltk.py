@@ -11,7 +11,7 @@ from typing import List
 
 
 from bripy.bllb.logging import logger, DBG
-from bripy.bllb.bllb_str import *
+from bripy.bllb.str import *
 
 
 def remove_nltk_stopwords(s: str, punc: bool = True) -> List[str]:

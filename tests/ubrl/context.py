@@ -19,7 +19,7 @@ from bripy.ubrl.ubrl import DNS, Server, URL
 # from bripy.bllb.bllb import *  # noqa
 # from bripy.bllb.logging import *  # noqa
 # from bripy.bllb.bllb_file import *  # noqa
-# from bripy.bllb.bllb_str import *  # noqa
+# from bripy.bllb.str import *  # noqa
 
 # from bripy.bllb.iter import *  # noqa
 

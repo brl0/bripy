@@ -1,8 +1,8 @@
 """bllb string helpers."""
-
 from binascii import hexlify
 from datetime import datetime
 from difflib import SequenceMatcher
+from itertools import chain
 import hashlib
 import math
 import re
@@ -478,3 +478,11 @@ def pad_punctuation_w_space(text: str) -> str:
 stripper = lambda s: s.strip(string.whitespace + '\xa0')
 
 fix_cr = lambda s: s.replace('\r\n', '\n').replace('\r', '\n')
+
+
+def multisplit(w, splitters = ["/", "\\", "_", " ", ".", ":"]):
+    """Split word with multiple splitters."""
+    words = [w]
+    for s in splitters:
+        words = [*chain(*[word.split(s) for word in words])]
+    return [word for word in words if word]

@@ -7,7 +7,7 @@ from typing import Iterable, List, Optional, Set, Tuple
 from urllib.request import urlopen
 
 from bripy.bllb.iter import reduce_iconcat
-from bripy.bllb.bllb_str import *
+from bripy.bllb.str import *
 
 LANGUAGE = "english"
 

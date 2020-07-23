@@ -1,9 +1,10 @@
 """examinator script using dask"""
+import logging
+import sys
 from functools import partial
 from itertools import chain
 from pathlib import Path
 from pprint import pprint
-import sys
 
 import click
 import pandas as pd
@@ -34,6 +35,8 @@ def main(path):
     print(df)
 
 if __name__ == "__main__":
+    logger = logging.getLogger()
+    logger.setLevel("DEBUG")
     cluster = LocalCluster()
     client = Client(cluster)
     sys.exit(main())  # pragma: no cover
