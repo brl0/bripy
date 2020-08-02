@@ -14,7 +14,7 @@ from tqdm import tqdm
 from bripy.bllb.fs import get_stat
 from bripy.bllb.file import md5_blocks
 
-basepath = r'C:\Users\b_r_l\Downloads'
+basepath = r'C:/local/projects/pystuff'
 output_db = r'fileinfo.db'
 database = r'tracking.db'
 

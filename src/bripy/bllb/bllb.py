@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 """bllb - Brian L LiBrary."""
-
 import sys
 
 from bripy.bllb.logging import logger, DBG
-
-
-def print_sysinfo():
-    """Print Python version information."""
-    print(f"exe:\t{sys.executable}\nversion:\t{sys.version}")
 
 
 def setup_libtmux():
