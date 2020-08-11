@@ -5,7 +5,7 @@ from multiprocessing import (Process, JoinableQueue as Queue, freeze_support)
 from time import sleep
 import sys
 
-from bripy.bllb.bllb_logging import get_dbg, setup_logging
+from bripy.bllb.logging import get_dbg, setup_logging
 
 logger = setup_logging(True, "INFO", loguru_enqueue=True)
 DBG = get_dbg(logger)
@@ -85,8 +85,10 @@ def main():
         process.close()
 
     for process in processes:
-        process.join()
-
+        try:
+            process.join()
+        except ValueError:
+            ...
 
     print(f'done_q qsize: {done_q.qsize()}')
     sleep(0.05)

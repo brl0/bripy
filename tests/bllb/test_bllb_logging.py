@@ -10,7 +10,7 @@ from click.testing import CliRunner
 import pytest
 from scripttest import TestFileEnvironment as FileEnvironment
 
-from bripy.bllb.bllb_logging import (disable_logging, disable_std_logging,
+from bripy.bllb.logging import (disable_logging, disable_std_logging,
                                      main, setup_logging)
 
 try:

@@ -12,8 +12,8 @@ import time
 import pandas as pd
 from sqlalchemy import create_engine
 
-from bripy.bllb.bllb_logging import setup_logging
-from bripy.bllb.bllb_str import hash_utf8
+from bripy.bllb.logging import setup_logging
+from bripy.bllb.str import hash_utf8
 
 LOG_ON = False
 LOG_LEVEL = "DEBUG"

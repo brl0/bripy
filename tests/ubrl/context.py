@@ -17,11 +17,11 @@ from bripy.ubrl.ubrl import DNS, Server, URL
 # sys.path.insert(0, lib_path_abs)
 
 # from bripy.bllb.bllb import *  # noqa
-# from bripy.bllb.bllb_logging import *  # noqa
+# from bripy.bllb.logging import *  # noqa
 # from bripy.bllb.bllb_file import *  # noqa
-# from bripy.bllb.bllb_str import *  # noqa
+# from bripy.bllb.str import *  # noqa
 
-# from bllb_iter import *  # noqa
+# from bripy.bllb.iter import *  # noqa
 
 
 def main():

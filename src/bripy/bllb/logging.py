@@ -63,11 +63,18 @@ def setup_logging(
 
 
 def get_dbg(logger):
-    if logger:
-        if isinstance(logger, logging.Logger):
-            return logger.debug
-        return logger.opt(lazy=True).debug
-    return print
+    if not logger:
+        return print
+    if isinstance(logger, logging.Logger):
+        return logger.debug
+    try:
+        DBG = logger.opt(lazy=True).debug
+    except Exception:
+        if 'debug' in dir(logger):
+            DBG = logger.debug
+        else:
+            raise Exception("Unknown logger type.")
+    return DBG
 
 
 def enable_loguru(name: str = "bllb",

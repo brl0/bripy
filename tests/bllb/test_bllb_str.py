@@ -8,7 +8,7 @@ from hypothesis.strategies import text
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 import pytest
 
-from bripy.bllb.bllb_str import *
+from bripy.bllb.str import *
 
 DEFAULT_RUNS = 50
 
