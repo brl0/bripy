@@ -37,32 +37,23 @@ from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.display import display, HTML
 
 InteractiveShell.ast_node_interactivity = "all"
-pd.options.display.html.table_schema = True
+#pd.options.display.html.table_schema = True
 
 from tqdm import tqdm_notebook as tqdm
 
 # Import plotting tools
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.style as mplstyle
 
 import seaborn as sns
 
-import datashader as ds
-import datashader.utils as utils
-import datashader.transfer_functions as tf
-
-import bokeh
-from bokeh.io import show, output_file, output_notebook
-from bokeh.plotting import figure
-
 import holoviews as hv
-from holoviews import opts
+from holoviews import opts as hv_opts
 
 # import hvplot.pandas
-hv.extension("bokeh", "matplotlib", width="100")
+hv.extension("bokeh", "matplotlib")
 
-import pdvega
+#import pdvega
 
 imports = get_imports(globals())
 """
