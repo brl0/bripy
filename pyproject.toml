@@ -1,7 +1,139 @@
 [build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling",
+"hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bripy"
+dynamic = ["version"]
+description = "Add a short description here!"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Brian Larsen", email = "B_R_L@hotmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "attrs",
+    "bash",
+    "boltons",
+    "click",
+    "dask",
+    "dnspython",
+    "fsspec",
+    "importlib-metadata; python_version<\"3.8\"",
+    "ipympl",
+    "konch",
+    "libtmux",
+    "loguru",
+    "loguru",
+    "multiping",
+    "numpy",
+    "pandas",
+    "pdvega",
+    "primesieve",
+    "psutil",
+    "PyPDF4",
+    "pyscaffold",
+    "python-slugify",
+    "requests",
+    "spacy",
+    "tldextract",
+    "tqdm",
+    "universal_pathlib",
+    "validators",
+    "w3lib",
+    "watermark",
+    "werkzeug",
+]
+
+[project.optional-dependencies]
+all = [
+    "bandit",
+    "black",
+    "black",
+    "codecov",
+    "coverage",
+    "datashader",
+    "dominate",
+    "flake8",
+    "fpdf",
+    "holoviews",
+    "hypothesis-auto",
+    "ipympl",
+    "isort",
+    "mypy",
+    "pdvega",
+    "prospector",
+    "pycodestyle",
+    "pydocstyle",
+    "pylama",
+    "pytest",
+    "pytest-cov",
+    "python-slugify",
+    "scripttest",
+    "setuptools",
+    "Sphinx",
+    "watermark",
+    "yapf",
+]
+dev = [
+    "black",
+    "codecov",
+    "Sphinx",
+    "yapf",
+]
+jupyter = [
+    "datashader",
+    "holoviews",
+    "ipympl",
+    "pdvega",
+    "python-slugify",
+    "watermark",
+]
+linters = [
+    "bandit",
+    "black",
+    "flake8",
+    "isort",
+    "mypy",
+    "prospector",
+    "pycodestyle",
+    "pydocstyle",
+    "pylama",
+]
+testing = [
+    "coverage",
+    "dominate",
+    "fpdf",
+    "hypothesis-auto",
+    "pytest",
+    "pytest-cov",
+    "scripttest",
+    "setuptools",
+]
+
+[project.scripts]
+bllb_parsers = "bripy.bllb.bllb_parsers:main"
+ubrl = "bripy.ubrl.cli:main"
+
+[project.urls]
+Documentation = "https://github.com/brl0/bripy/"
+Homepage = "https://github.com/brl0/bripy/"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "bripy/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+]
 
 [tool.setuptools_scm]
 # For smarter version schemes and other configuration options,
