@@ -17,21 +17,21 @@ import click
 DEFAULT_LVL = "WARNING"
 DISABLE_LVL = sys.maxsize
 
-__all__ = ['setup_logging', 'disable_logging', 'logger', 'DBG']
+__all__ = ["setup_logging", "disable_logging", "logger", "DBG"]
 
 
 def setup_logging(
-        enable: bool = True,
-        lvl: Optional[Union[int, str]] = None,
-        std_lib: bool = False,
-        loguru_enqueue: bool = True,
+    enable: bool = True,
+    lvl: int | str | None = None,
+    std_lib: bool = False,
+    loguru_enqueue: bool = True,
 ) -> object:
     """Enable or disable logging. Defaults to DEBUG level.
 
     Levels: {"DEBUG": 10, "INFO": 20, "WARNING": 30,
              "ERROR": 40, "CRITICAL": 50, "NOTSET" : 0}
     """
-    #assert not (std_lib and loguru_enqueue)
+    # assert not (std_lib and loguru_enqueue)
     loguru_error = False
     if lvl is None:
         if enable:
@@ -52,13 +52,13 @@ def setup_logging(
             logger = enable_std_logging(lvl=lvl)
             if loguru_error:
                 logger.warning(
-                    "Error importing loguru, using standard library logging.")
+                    "Error importing loguru, using standard library logging."
+                )
         else:
             logger = disable_std_logging()
-    logger.debug(f"log settings\n"
-                 f"\tEnabled:\t{enable}\n"
-                 f"\tLevel:\t{lvl}\n"
-                 f"\t{std_lib}")  # noqa
+    logger.debug(
+        f"log settings\n" f"\tEnabled:\t{enable}\n" f"\tLevel:\t{lvl}\n" f"\t{std_lib}"
+    )  # noqa
     return logger
 
 
@@ -70,19 +70,20 @@ def get_dbg(logger):
     try:
         DBG = logger.opt(lazy=True).debug
     except Exception:
-        if 'debug' in dir(logger):
+        if "debug" in dir(logger):
             DBG = logger.debug
         else:
             raise Exception("Unknown logger type.")
     return DBG
 
 
-def enable_loguru(name: str = "bllb",
-                  lvl: Union[int, str] = "DEBUG",
-                  enqueue: bool = True) -> object:
+def enable_loguru(
+    name: str = "bllb", lvl: int | str = "DEBUG", enqueue: bool = True
+) -> object:
     """Enable loguru or return new loguru logger."""
     from loguru import logger
-    sys.stdout.reconfigure(encoding='utf-8', errors='backslashreplace')
+
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
     logger.remove()
     logger.add(
         sys.stdout,
@@ -101,7 +102,7 @@ def enable_loguru(name: str = "bllb",
     return logger
 
 
-def disable_loguru(logger: Optional[object] = None) -> object:
+def disable_loguru(logger: object | None = None) -> object:
     """Disable loguru logger or create and disable."""
     if isinstance(logger, logging.Logger):
         return disable_std_logging(logger)
@@ -116,8 +117,7 @@ def disable_loguru(logger: Optional[object] = None) -> object:
 disable_logging = disable_loguru  # Will disable std if needed.
 
 
-def enable_std_logging(name: str = "bllb",
-                       lvl: Union[int, str] = "DEBUG") -> object:
+def enable_std_logging(name: str = "bllb", lvl: int | str = "DEBUG") -> object:
     """Enable standard logging library, return logger."""
     log_format = "%(asctime)s : %(levelname)s \t: %(message)s"
     logger = logging.getLogger(name)
@@ -130,7 +130,7 @@ def enable_std_logging(name: str = "bllb",
     return logger
 
 
-def disable_std_logging(logger: Optional[object] = None) -> object:
+def disable_std_logging(logger: object | None = None) -> object:
     """Disable standard logging."""
     filterwarnings("ignore")
     if logger is None:
@@ -143,13 +143,11 @@ def disable_std_logging(logger: Optional[object] = None) -> object:
 @click.option("--enable/--disable", default=True)
 @click.option("--stdlib/--no-stdlib", default=False)
 @click.option("--enqueue/--no-enqueue", default=False)
-def main(enable: bool = True, stdlib: bool = False,
-         enqueue: bool = False) -> int:
+def main(enable: bool = True, stdlib: bool = False, enqueue: bool = False) -> int:
     """Testing."""
-    logger = setup_logging(enable=enable,
-                           lvl=None,
-                           std_lib=stdlib,
-                           loguru_enqueue=enqueue)
+    logger = setup_logging(
+        enable=enable, lvl=None, std_lib=stdlib, loguru_enqueue=enqueue
+    )
     logger.error("This is a logging configuration module.")
     disable_logging(logger)
     logger.error("Logging disabled.")

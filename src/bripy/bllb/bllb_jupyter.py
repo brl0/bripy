@@ -2,58 +2,63 @@
 """bllb Jupyter common imports."""
 # pylint: disable=unused-wildcard-import, unused-import
 
-from bripy.bllb.logging import logger, DBG, setup_logging
-from bripy.bllb.bllb import get_imports
-
 from warnings import filterwarnings
+
+from bripy.bllb.bllb import get_imports
+from bripy.bllb.logging import DBG, logger, setup_logging
+
 filterwarnings("ignore")
+
+# Other standard library imports
+import io
+import math
 
 # Standard notebook settings configuration and imports
 import os
+import re
+import string
 import sys
+import time
+import unicodedata
 from datetime import datetime
+from operator import attrgetter as aget
+from operator import itemgetter as iget
 from pathlib import Path
+from pprint import pprint as pp
+from time import sleep
+
+# IPython imports and configuration
+import IPython
+
+# External library imports
+import numpy as np
+import pandas as pd
+import psutil
+from IPython.core.display import HTML, display
+from IPython.core.interactiveshell import InteractiveShell
 
 # imports to sanitize title for file name
 # from urllib.parse import quote_plus
 # from unicodedata import normalize
 from slugify import slugify
-
-# Other standard library imports
-import io, math, re, string, time, unicodedata
-from time import sleep
-from operator import itemgetter as iget, attrgetter as aget
-from pprint import pprint as pp
-import psutil
-
-# External library imports
-import numpy as np
-import pandas as pd
 from tqdm import tqdm_pandas
 
-# IPython imports and configuration
-import IPython
-from IPython.core.interactiveshell import InteractiveShell
-from IPython.core.display import display, HTML
-
 InteractiveShell.ast_node_interactivity = "all"
-#pd.options.display.html.table_schema = True
+# pd.options.display.html.table_schema = True
 
-from tqdm import tqdm_notebook as tqdm
+import holoviews as hv
 
 # Import plotting tools
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 import seaborn as sns
-
-import holoviews as hv
 from holoviews import opts as hv_opts
+from tqdm import tqdm_notebook as tqdm
 
 # import hvplot.pandas
 hv.extension("bokeh", "matplotlib")
 
-#import pdvega
+# import pdvega
 
 imports = get_imports(globals())
 """

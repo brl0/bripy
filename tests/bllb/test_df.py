@@ -9,6 +9,7 @@ def test_pdhtml(RANGES):
     pdhtml(pd.DataFrame(RANGES))
     assert True
 
+
 def test_pdinfo(RANGES):
     """Simply execute function."""
     pdinfo(pd.DataFrame(RANGES))

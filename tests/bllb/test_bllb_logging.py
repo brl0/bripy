@@ -6,12 +6,11 @@ import os
 import sys
 from warnings import filterwarnings
 
-from click.testing import CliRunner
 import pytest
+from click.testing import CliRunner
 from scripttest import TestFileEnvironment as FileEnvironment
 
-from bripy.bllb.logging import (disable_logging, disable_std_logging,
-                                     main, setup_logging)
+from bripy.bllb.logging import disable_logging, disable_std_logging, main, setup_logging
 
 try:
     import loguru
@@ -28,10 +27,9 @@ filterwarnings("ignore")
 def test_loguru_logger(capsys):
     """Test loguru logger."""
 
-    logger = setup_logging(enable=True,
-                           lvl="DEBUG",
-                           std_lib=False,
-                           loguru_enqueue=False)
+    logger = setup_logging(
+        enable=True, lvl="DEBUG", std_lib=False, loguru_enqueue=False
+    )
     assert isinstance(logger, type(loguru.logger))
 
     msg = "Test loguru debug output."
@@ -47,10 +45,7 @@ def test_loguru_logger(capsys):
 
 def test_std_logger(caplog):
     """Test stdlib logger."""
-    logger = setup_logging(enable=True,
-                           lvl=None,
-                           std_lib=True,
-                           loguru_enqueue=False)
+    logger = setup_logging(enable=True, lvl=None, std_lib=True, loguru_enqueue=False)
     assert isinstance(logger, logging.Logger)
 
     msg = "Test logger debug output"
@@ -82,11 +77,7 @@ def test_cli_stdlib():
 
 def test_cli_stdlib_disable():
     """Test stdlib with disable."""
-    res = ENV.run("python",
-                  SCRIPT_PATH,
-                  "--disable",
-                  "--stdlib",
-                  expect_stderr=True)
+    res = ENV.run("python", SCRIPT_PATH, "--disable", "--stdlib", expect_stderr=True)
     assert not res.stdout and not res.stderr
 
 
@@ -101,17 +92,17 @@ def test_main():
 def test_main_disabled():
     """Test main with disable option."""
     runner = CliRunner()
-    result = runner.invoke(main, ['--disable'])
+    result = runner.invoke(main, ["--disable"])
     assert result.exit_code == 0
-    assert result.output == ''
+    assert result.output == ""
 
 
 def test_main_std_disabled():
     """Test main with disable and stdlib options."""
     runner = CliRunner()
-    result = runner.invoke(main, ['--disable', '--stdlib'])
+    result = runner.invoke(main, ["--disable", "--stdlib"])
     assert result.exit_code == 0
-    assert result.output == ''
+    assert result.output == ""
 
 
 def test_loguru_disabled(capsys):
@@ -136,10 +127,11 @@ def test_stdlib_disabled(capsys):
 
 def test_loguru_import_error():
     """Test fallback to stdlib if loguru raises exception."""
+
     class loguru:
         def __init__(self):
             raise Exception
 
-    sys.modules['loguru'] = loguru
+    sys.modules["loguru"] = loguru
     logger = setup_logging()
     assert isinstance(logger, logging.Logger)

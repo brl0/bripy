@@ -2,9 +2,10 @@ from queue import Queue
 from threading import Thread
 from time import sleep
 
-from bripy.bllb.logging import logger, DBG
+from bripy.bllb.logging import DBG, logger
 
-def unloadq(q, stop, limit=2000, rest=.1, check=100):
+
+def unloadq(q, stop, limit=2000, rest=0.1, check=100):
     i = limit
     loops = 0
     results = []
@@ -26,7 +27,7 @@ def unloadq(q, stop, limit=2000, rest=.1, check=100):
 
 
 def multiplex(n, q, **kwargs):
-    """ Convert one queue into several equivalent Queues
+    """Convert one queue into several equivalent Queues
 
     >>> q1, q2, q3 = multiplex(3, in_q)
     """
@@ -51,7 +52,7 @@ def push(in_q, out_q):
 
 
 def merge(*in_qs, **kwargs):
-    """ Merge multiple queues together
+    """Merge multiple queues together
 
     >>> out_q = merge(q1, q2, q3)
     """
@@ -72,8 +73,8 @@ def get_q(q):
     results = []
     while not q.empty() or q.qsize():
         item = q.get()
-        if item == 'STOP':
-            DBG('STOP get_q')
+        if item == "STOP":
+            DBG("STOP get_q")
             q.task_done()
             break
         DBG(item)

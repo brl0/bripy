@@ -1,17 +1,18 @@
 """bllb string helpers."""
-from binascii import hexlify
-from datetime import datetime
-from difflib import SequenceMatcher
-from itertools import chain
 import hashlib
 import math
 import re
 import string
-from typing import (Any, Collection, Dict, Iterator, List, Mapping)
+from binascii import hexlify
+from collections.abc import Collection, Iterator, Mapping
+from datetime import datetime
+from difflib import SequenceMatcher
+from itertools import chain
+from typing import Any, Dict, List
 from unicodedata import normalize
 from urllib.parse import quote_plus
 
-from bripy.bllb.logging import logger, DBG
+from bripy.bllb.logging import DBG, logger
 
 
 def hash_utf8(text: str) -> str:
@@ -31,13 +32,13 @@ def date_slug(timestamp: datetime = datetime.now()) -> str:
     return timestamp.strftime("%Y%m%d%H%M%S")
 
 
-def get_nums(text: str) -> List[float]:
+def get_nums(text: str) -> list[float]:
     """Extract list of floats from a string."""
     numex = re.compile(r"\-?\.?\d+\.?\d*")
     return [float(_) for _ in numex.findall(str(text))]
 
 
-def get_ints(text: str) -> List[int]:
+def get_ints(text: str) -> list[int]:
     """Extract list of ints from string."""
     numex = re.compile(r"\-?\d+")
     return [int(_) for _ in numex.findall(str(text))]
@@ -61,25 +62,22 @@ def is_number_like(text: str) -> bool:
         return False
 
 
-def get_acronyms(text: str) -> List[str]:
+def get_acronyms(text: str) -> list[str]:
     """Extract uppercase only potential acronyms from string."""
     return [
-        _ for _ in text.translate(
-            str.maketrans(string.ascii_lowercase, " " *
-                          len(string.ascii_lowercase))).split() if len(_) > 1
+        _
+        for _ in text.translate(
+            str.maketrans(string.ascii_lowercase, " " * len(string.ascii_lowercase))
+        ).split()
+        if len(_) > 1
     ]
 
 
 def split_camel_case(text: str) -> str:
     """Split words written in camelCase."""
     return re.sub(
-        r"("
-        r"(?<=[a-z])"
-        r"[A-Z]|"
-        r"(?<!\A)"
-        r"[A-Z]"
-        r"(?=[a-z])"
-        r")", r" \1", text)
+        r"(" r"(?<=[a-z])" r"[A-Z]|" r"(?<!\A)" r"[A-Z]" r"(?=[a-z])" r")", r" \1", text
+    )
 
 
 def get_symbols(text: str) -> str:
@@ -88,7 +86,8 @@ def get_symbols(text: str) -> str:
         str.maketrans(
             string.ascii_letters + string.digits,
             " " * len(string.ascii_letters) + " " * len(string.digits),
-        ))
+        )
+    )
 
 
 def comp(text1: str, text2: str) -> float:
@@ -109,16 +108,20 @@ def comp_real_quick(text1: str, text2: str) -> float:
     return differ.real_quick_ratio()
 
 
-def symbol_counts_dist(texts: Collection[str],
-                       symbols: str = "`~!@#$%^&*)(-_+=|\\}{][:;><,.?"
-                       ) -> Dict[str, Dict[int, int]]:
+def symbol_counts_dist(
+    texts: Collection[str], symbols: str = "`~!@#$%^&*)(-_+=|\\}{][:;><,.?"
+) -> dict[str, dict[int, int]]:
     """Count distribution of symbols in strings."""
     import numpy as np
 
     return {
         ch: dict(
-            zip(*np.unique(list(map(lambda s: str(s).count(ch), texts)),
-                           return_counts=True)))
+            zip(
+                *np.unique(
+                    list(map(lambda s: str(s).count(ch), texts)), return_counts=True
+                )
+            )
+        )
         for ch in symbols
     }
 
@@ -132,9 +135,7 @@ class Entropy:
 
     range_bytes = range(256)
     range_printable = (ord(c) for c in string.printable)
-    range_alphanum_lower = (ord(c) for c in
-                            string.ascii_lowercase +
-                            string.digits)
+    range_alphanum_lower = (ord(c) for c in string.ascii_lowercase + string.digits)
 
     @staticmethod
     def h(data: bytes, iterator: Iterator = range_bytes) -> float:
@@ -184,8 +185,7 @@ def keep_word(word: str, req_len: int, stops: Collection[str]) -> bool:
     return False
 
 
-def check_case_list(word_list: Collection[str],
-                    lower: bool = True) -> List[str]:
+def check_case_list(word_list: Collection[str], lower: bool = True) -> list[str]:
     """Check case of a list of words."""
     results = []
     for word in word_list:
@@ -193,8 +193,7 @@ def check_case_list(word_list: Collection[str],
     return results
 
 
-def remove_chars(text: str, chars: str = r"\\`*_{}[]()>#+-.!$",
-                 new: str = "") -> str:
+def remove_chars(text: str, chars: str = r"\\`*_{}[]()>#+-.!$", new: str = "") -> str:
     """Remove characters from a string."""
     for ch in chars:
         if ch in text:
@@ -202,13 +201,12 @@ def remove_chars(text: str, chars: str = r"\\`*_{}[]()>#+-.!$",
     return text
 
 
-def text_only(text: str) -> List[str]:
+def text_only(text: str) -> list[str]:
     """Extract only alphabet chars."""
     return re.findall(r"[" + string.ascii_letters + "']+", text)
 
 
-def split_num_words(word_list: Collection[str],
-                    lower: bool = True) -> List[str]:
+def split_num_words(word_list: Collection[str], lower: bool = True) -> list[str]:
     """Split words containing numbers."""
     results = []
     if word_list:
@@ -218,28 +216,26 @@ def split_num_words(word_list: Collection[str],
             for word in re.findall(r"[\w']+", str(text)):
                 if not word:  # pragma: no cover
                     break
-                for _ in remove_chars(word, string.digits + "_",
-                                      " ").split():
+                for _ in remove_chars(word, string.digits + "_", " ").split():
                     if not _:  # pragma: no cover
                         break
                     results.append(check_case(_, lower))
     return results
 
 
-def make_token_pattern(ltr_cnt: int = 3,
-                       inc_num: bool = False,
-                       inc_apos: bool = True) -> str:
+def make_token_pattern(
+    ltr_cnt: int = 3, inc_num: bool = False, inc_apos: bool = True
+) -> str:
     """Make token pattern."""
     chars = f"{string.ascii_letters}"
     if inc_num:
         chars += f"{string.digits}"
     if inc_apos:
         chars += "'"
-    return fr"[{chars}]" r"{" fr"{ltr_cnt}" r",}"
+    return rf"[{chars}]" r"{" rf"{ltr_cnt}" r",}"
 
 
-def make_exp(ltr_cnt: int = 3, inc_num: bool = False,
-             inc_apos: bool = True) -> Any:
+def make_exp(ltr_cnt: int = 3, inc_num: bool = False, inc_apos: bool = True) -> Any:
     """Make compiled regular expression."""
     return re.compile(make_token_pattern(ltr_cnt, inc_num, inc_apos))
 
@@ -264,7 +260,7 @@ def pre(text: str, casefold: bool = True, camel: bool = True) -> str:
 MIN_WORD_LEN = 3
 
 
-def tok(text: str, exp: Any = make_exp(MIN_WORD_LEN)) -> List[str]:
+def tok(text: str, exp: Any = make_exp(MIN_WORD_LEN)) -> list[str]:
     """Tokenize string."""
     return exp.findall(text)
 
@@ -278,21 +274,23 @@ WORD_EXP1 = make_exp(1)
 WORD_EXP3 = make_exp(3)
 
 
-def tok1(text: str) -> List[str]:
+def tok1(text: str) -> list[str]:
     """Tokenize allowing words of length 1 or greater."""
     return tok(text, WORD_EXP1)
 
 
-def tok3(text: str) -> List[str]:
+def tok3(text: str) -> list[str]:
     """Tokenize allowing words of length 3 or greater."""
     return tok(text, WORD_EXP3)
 
 
-def make_trans_table(tolower: bool = True,
-                     toupper: bool = False,
-                     repl_num: bool = False,
-                     repl_punc: bool = True,
-                     bad_chars: str = "") -> Mapping:
+def make_trans_table(
+    tolower: bool = True,
+    toupper: bool = False,
+    repl_num: bool = False,
+    repl_punc: bool = True,
+    bad_chars: str = "",
+) -> Mapping:
     """Create string translation table for translate string function."""
     good_chars = string.whitespace
     repl_chars = len(string.whitespace) * " "
@@ -323,7 +321,7 @@ def get_whiteout(nums: bool = True, chars: str = "", bad: str = "") -> Mapping:
     return str.maketrans(replace_chars, " " * len(replace_chars), bad)
 
 
-PUNCTS = set([
+PUNCTS = {
     ",",
     ".",
     '"',
@@ -454,7 +452,7 @@ PUNCTS = set([
     "≤",
     "‡",
     "√",
-])
+}
 
 
 def clean_text(text: str) -> str:
@@ -475,12 +473,12 @@ def pad_punctuation_w_space(text: str) -> str:
     return result
 
 
-stripper = lambda s: s.strip(string.whitespace + '\xa0')
+stripper = lambda s: s.strip(string.whitespace + "\xa0")
 
-fix_cr = lambda s: s.replace('\r\n', '\n').replace('\r', '\n')
+fix_cr = lambda s: s.replace("\r\n", "\n").replace("\r", "\n")
 
 
-def multisplit(w, splitters = ["/", "\\", "_", " ", ".", ":"]):
+def multisplit(w, splitters=["/", "\\", "_", " ", ".", ":"]):
     """Split word with multiple splitters."""
     words = [w]
     for s in splitters:

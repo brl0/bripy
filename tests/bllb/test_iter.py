@@ -1,13 +1,12 @@
 """Test bllb.iter."""
 from typing import List
 
-from hypothesis import given
 import hypothesis.strategies as st
+from conftest import DEFAULTS
+from hypothesis import given
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 
 from bripy.bllb.iter import *
-from conftest import DEFAULTS
-
 
 # FUNCTIONS = {
 #     striter: DEFAULTS.RUNS,
@@ -21,6 +20,7 @@ from conftest import DEFAULTS
 # auto_pytest_magic(striter, auto_runs_=DEFAULTS.RUNS)
 # auto_pytest_magic(listerine, auto_runs_=DEFAULTS.RUNS)
 # auto_pytest_magic(ppiter, auto_runs_=DEFAULTS.RUNS)
+
 
 def test_flatten(RANGES):
     """Test len of flatten list matches sum of lens."""
@@ -39,7 +39,7 @@ def test_ppiter(RANGES):
 
 
 @given(st.lists(st.text()))
-def test_cat(strings: List[str]):
+def test_cat(strings: list[str]):
     """Test cat alias for join."""
     result = cat(strings)
     assert len(result) == sum(map(len, strings))
@@ -54,4 +54,4 @@ def test_cat_auto(test_case):
 
 def test_listerine_str():
     """Test listerine with simple string."""
-    assert listerine('abc') == ['abc']
+    assert listerine("abc") == ["abc"]

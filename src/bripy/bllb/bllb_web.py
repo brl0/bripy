@@ -48,5 +48,5 @@ def new_webdriver(chromiumbrowser_path):
     # chrome_options.add_argument("--remote-debugging-port=9222")
 
     return webdriver.Chrome(
-        executable_path=chromiumbrowser_path,
-        chrome_options=chrome_options)
+        executable_path=chromiumbrowser_path, chrome_options=chrome_options
+    )

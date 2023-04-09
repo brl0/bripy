@@ -1,20 +1,20 @@
 """bllb NLTK helpers."""
 
 
+from typing import List
+
 from nltk import pos_tag, regexp_tokenize, word_tokenize
 from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import wordpunct_tokenize
-from typing import List
 
-
-from bripy.bllb.logging import logger, DBG
+from bripy.bllb.logging import DBG, logger
 from bripy.bllb.str import *
 
 
-def remove_nltk_stopwords(s: str, punc: bool = True) -> List[str]:
+def remove_nltk_stopwords(s: str, punc: bool = True) -> list[str]:
     """Remove stop words and punctuation and return list of tokens."""
     nltk_stopword_set = set(stopwords.words("english"))
     # remove it if you need punctuation
@@ -38,9 +38,7 @@ def remove_nltk_stopwords(s: str, punc: bool = True) -> List[str]:
             ]
         )
     return [
-        word
-        for word in word_tokenize(s)
-        if word.casefold() not in nltk_stopword_set
+        word for word in word_tokenize(s) if word.casefold() not in nltk_stopword_set
     ]
 
 
@@ -75,16 +73,15 @@ def iget_wordnet_lemmas(iterable):
     return list(map(lambda l: list(map(get_wordnet_lemma, l)), iterable))
 
 
-def lemmatize_sent(sentence: str) -> List[str]:
+def lemmatize_sent(sentence: str) -> list[str]:
     """Lemmatize a Sentence with the appropriate POS tag."""
     lemmatizer = WordNetLemmatizer()
     return [
-        lemmatizer.lemmatize(w, get_wordnet_pos(w))
-        for w in word_tokenize(sentence)
+        lemmatizer.lemmatize(w, get_wordnet_pos(w)) for w in word_tokenize(sentence)
     ]
 
 
-def reg_tok(s: str, pattern: str = r"'\w+|\$[\d\.]+|\S+'") -> List[str]:
+def reg_tok(s: str, pattern: str = r"'\w+|\$[\d\.]+|\S+'") -> list[str]:
     """Tokenize based on regular expression."""
     return regexp_tokenize(s, pattern, gaps=False)
 
@@ -93,7 +90,7 @@ def nltk_tok(s):
     return regexp_tokenize(s, make_token_pattern(2), gaps=False)
 
 
-def porter_stem(doc: str) -> List[str]:
+def porter_stem(doc: str) -> list[str]:
     stop_words = set(stopwords.words("english"))
     # remove it if you need punctuation
     stop_words.update(

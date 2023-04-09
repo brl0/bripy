@@ -3,10 +3,10 @@
 
 import re
 
+import pytest
 from hypothesis import given
 from hypothesis.strategies import text
 from hypothesis_auto import auto_pytest, auto_pytest_magic
-import pytest
 
 from bripy.bllb.str import *
 
@@ -71,7 +71,7 @@ def test_split_words_auto(test_case):
     test_case()
 
 
-test_nums = ['0', '-1', '0.123', '.123', '-.123', '1.23']
+test_nums = ["0", "-1", "0.123", ".123", "-.123", "1.23"]
 
 
 @pytest.mark.parametrize("text", test_nums)
@@ -80,7 +80,7 @@ def test_is_number(text):
     assert is_number(text)
 
 
-test_num_like = ['0', '-1,100', '1,23', '1/1/1', '1_100', '1.23.45.67']
+test_num_like = ["0", "-1,100", "1,23", "1/1/1", "1_100", "1.23.45.67"]
 
 
 @pytest.mark.parametrize("text", test_num_like)
@@ -91,7 +91,7 @@ def test_is_number_like(text):
 
 def test_check_case():
     """Test check_case with non-default options."""
-    assert check_case('TEST', lower=False) == 'TEST'
+    assert check_case("TEST", lower=False) == "TEST"
 
 
 def test_token_num():
@@ -101,7 +101,7 @@ def test_token_num():
 
 def test_pre():
     """Test pre with non-default options."""
-    assert pre('TEST', casefold=False) == 'TEST'
+    assert pre("TEST", casefold=False) == "TEST"
 
 
 def test_trans():

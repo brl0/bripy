@@ -7,7 +7,8 @@ import pytest
 from bripy.bllb.file import *
 
 TEST_TEXT = "\n".join(
-    [" ".join([*map(str, range(i))][::-1]) for i in range(10)]).strip()
+    [" ".join([*map(str, range(i))][::-1]) for i in range(10)]
+).strip()
 
 
 @pytest.fixture(scope="session")
@@ -25,7 +26,7 @@ def test_get_txt(tmp_file):
 
 def test_get_lines(tmp_file):
     """Test get_lines."""
-    assert get_lines(tmp_file, 0, 2) == ['0', '1 0']
+    assert get_lines(tmp_file, 0, 2) == ["0", "1 0"]
 
 
 def test_gen_lines(tmp_file):
@@ -35,7 +36,7 @@ def test_gen_lines(tmp_file):
 
 def test_try_read(tmp_file):
     assert TEST_TEXT == "".join(try_read(tmp_file))
-    assert [*try_read('')] == ['']
+    assert [*try_read("")] == [""]
 
 
 def test_lines():

@@ -19,9 +19,7 @@ def test_cmd_ping_localhost():
 test_domains = {"IPv4": "ipv4.google.com", "IPv6": "ipv6.google.com"}
 
 
-@pytest.mark.parametrize("domain",
-                         test_domains.values(),
-                         ids=list(test_domains.keys()))
+@pytest.mark.parametrize("domain", test_domains.values(), ids=list(test_domains.keys()))
 def test_cmd_ping(domain):
     """Test ping command from cli on multiple domains."""
     res = env.run("ubrl", "ping", domain, expect_stderr=True)
@@ -30,9 +28,7 @@ def test_cmd_ping(domain):
     assert "True" in res.stdout
 
 
-@pytest.mark.parametrize("domain",
-                         test_domains.values(),
-                         ids=list(test_domains.keys()))
+@pytest.mark.parametrize("domain", test_domains.values(), ids=list(test_domains.keys()))
 def test_cmd_pingport(domain):
     """Test pingport command from cli."""
     res = env.run("ubrl", "pingport", domain, "80", expect_stderr=True)
@@ -51,11 +47,7 @@ def test_cmd_pingport_2():
 
 def test_cmd_pingport_IPv6():
     """Test pingport command over IPv6."""
-    res = env.run("ubrl",
-                  "pingport",
-                  "ipv6.google.com",
-                  "80",
-                  expect_stderr=True)
+    res = env.run("ubrl", "pingport", "ipv6.google.com", "80", expect_stderr=True)
     assert res.returncode == 0
     assert "ipv6.google.com" in res.stdout
     assert "True" in res.stdout

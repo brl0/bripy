@@ -1,16 +1,16 @@
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import sys
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import Manager
 from pathlib import Path
 from time import perf_counter, sleep
-from multiprocessing import Manager
-import sys
 
 import pandas as pd
 
-from bripy.examinator.examinator import get_stat, md5_blocks
 from bripy.bllb.str import hash_utf8
+from bripy.examinator.examinator import get_stat, md5_blocks
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code'
-output = 'fileinfo.csv'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code"
+output = "fileinfo.csv"
 
 EXECUTOR = ThreadPoolExecutor
 MAX_DIR_WORKERS = 40
@@ -49,7 +49,7 @@ def hash_worker(hash_q, hashes):
     return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     def main():
         with Manager() as manager:
@@ -58,8 +58,7 @@ if __name__ == '__main__':
             hash_q = manager.JoinableQueue()
             hashes = manager.list()
             q.put(basepath)
-            with ProcessPoolExecutor(
-                    max_workers=MAX_HASH_WORKERS) as processor:
+            with ProcessPoolExecutor(max_workers=MAX_HASH_WORKERS) as processor:
                 hash_futures = []
                 for _ in range(MAX_HASH_WORKERS):
                     future = processor.submit(hash_worker, hash_q, hashes)
@@ -67,29 +66,27 @@ if __name__ == '__main__':
                 with EXECUTOR(max_workers=MAX_DIR_WORKERS) as executor:
                     futures = []
                     for _ in range(MAX_DIR_WORKERS):
-                        future = executor.submit(dir_worker, q, hash_q,
-                                                 results)
+                        future = executor.submit(dir_worker, q, hash_q, results)
                         futures.append(future)
                     q.join()
                     for _ in range(MAX_DIR_WORKERS):
                         q.put(None)
                     success = all([future.result() for future in futures])
-                    df = pd.DataFrame.from_records(results).set_index(
-                        'path_hash')
+                    df = pd.DataFrame.from_records(results).set_index("path_hash")
                     print(df.info())
                 for _ in range(MAX_HASH_WORKERS):
                     hash_q.put(None)
                 hash_q.join()
-                hash_success = all(
-                    [future.result() for future in hash_futures])
+                hash_success = all([future.result() for future in hash_futures])
                 print(hash_success)
                 hash_df = pd.DataFrame.from_records(
-                    hashes, columns=['path_hash', 'md5'])
-                hash_df = hash_df.set_index('path_hash')
+                    hashes, columns=["path_hash", "md5"]
+                )
+                hash_df = hash_df.set_index("path_hash")
                 df = df.join(hash_df)
                 print(df.info())
                 df.to_csv(output)
-        print('FIN', success, perf_counter())
+        print("FIN", success, perf_counter())
         return 0 if success else 1
 
     sys.exit(main())

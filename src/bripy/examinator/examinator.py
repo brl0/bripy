@@ -1,22 +1,21 @@
 """Examinator basic functions."""
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import datetime as dt
-from hashlib import md5
 import inspect
-from operator import methodcaller
 import os
-from pathlib import Path
-from pprint import pprint as pp
 import sys
 import time
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from hashlib import md5
+from operator import methodcaller
+from pathlib import Path
+from pprint import pprint as pp
 
 import pandas as pd
 from sqlalchemy import create_engine
 
-from bripy.bllb.logging import setup_logging
 from bripy.bllb.file import md5_blocks
-from bripy.bllb.fs import get_stat, get_dir, rglob
-
+from bripy.bllb.fs import get_dir, get_stat, rglob
+from bripy.bllb.logging import setup_logging
 
 LOG_ON = False
 LOG_LEVEL = "DEBUG"
@@ -24,13 +23,13 @@ verbose = 2
 OPT_MD5 = True
 WORKERS = None
 EXECUTOR = ThreadPoolExecutor
-basepath = Path('..')
-output = r'.\output.csv.gz'
+basepath = Path("..")
+output = r".\output.csv.gz"
 
 
-def start_log(enable=True, lvl='WARNING'):
-    log = setup_logging(enable, lvl, loguru_enqueue=True)  #, std_lib=True)
-    log.info('examinator logging started')
+def start_log(enable=True, lvl="WARNING"):
+    log = setup_logging(enable, lvl, loguru_enqueue=True)  # , std_lib=True)
+    log.info("examinator logging started")
     return log
 
 
@@ -41,12 +40,12 @@ def main():
     df = pd.DataFrame(results)
     pp(df)
     print(df.info())
-    engine = create_engine('sqlite:///output.db')
-    df.to_sql('files', engine)
+    engine = create_engine("sqlite:///output.db")
+    df.to_sql("files", engine)
 
     elapsed = time.perf_counter() - s
     log.info(f"{__file__} executed in {elapsed:0.2f} seconds.".format())
-    log.debug('\n\nFIN\n\n')
+    log.debug("\n\nFIN\n\n")
 
 
 s = time.perf_counter()
@@ -57,9 +56,9 @@ if verbose:
     log_level = max(4 - verbose, 1) * 10
 global log
 log = start_log(log_on, log_level)
-log.info(f'verbose: {verbose}')
+log.info(f"verbose: {verbose}")
 log.warning(f"\nlogs enabled: {log_on}\nlog_level: {log_level}")
-log.debug(f'Optional md5 hash: {OPT_MD5}')
+log.debug(f"Optional md5 hash: {OPT_MD5}")
 time.sleep(0.05)  # Sleep to let logging initialize
 
 if __name__ == "__main__":

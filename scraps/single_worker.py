@@ -1,15 +1,15 @@
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import sys
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import Manager
 from pathlib import Path
 from time import perf_counter, sleep
-from multiprocessing import Manager
-import sys
 
 import pandas as pd
 
 from bripy.examinator.examinator import get_stat, md5_blocks
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code'
-output = 'fileinfo.csv'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code"
+output = "fileinfo.csv"
 
 EXECUTOR = ThreadPoolExecutor
 MAX_WORKERS = 40
@@ -29,13 +29,13 @@ def worker(q, results):
         if path.is_dir():
             [*map(q.put, path.iterdir())]
         elif path.is_file():
-            info['md5'] = md5_blocks(item)
+            info["md5"] = md5_blocks(item)
         results.append(info)
         q.task_done()
     return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     def main():
         with Manager() as manager:
@@ -52,10 +52,10 @@ if __name__ == '__main__':
                     q.put(None)
                 q.join()
                 success = all([future.result() for future in futures])
-                df = pd.DataFrame.from_records(results).set_index('path_hash')
+                df = pd.DataFrame.from_records(results).set_index("path_hash")
             print(df.info())
             df.to_csv(output)
-        print('FIN', success, perf_counter())
+        print("FIN", success, perf_counter())
         return 0 if success else 1
 
     sys.exit(main())

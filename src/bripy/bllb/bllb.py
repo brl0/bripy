@@ -2,7 +2,7 @@
 """bllb - Brian L LiBrary."""
 import sys
 
-from bripy.bllb.logging import logger, DBG
+from bripy.bllb.logging import DBG, logger
 
 
 def setup_libtmux():

@@ -1,29 +1,29 @@
 """URL helpers library."""
 
+import re
+import socket
 from functools import partial
 from ipaddress import IPv4Address, IPv6Address, ip_address
 from pathlib import PurePath
-import re
-import socket
 from typing import Dict, Set, TypeVar
 from urllib.parse import parse_qs, unquote_plus, urlparse, urlsplit, urlunsplit
 from urllib.request import urlopen
 
 import attr
+import requests
+import validators
 from boltons import urlutils
 from dns.resolver import Resolver
 from multiping import MultiPing
-import requests
 from slugify import slugify
 from tldextract import extract as tldextract
-import validators
 from w3lib.url import canonicalize_url
 from werkzeug.urls import url_fix
 
+from bripy.bllb.logging import DBG, logger
 from bripy.bllb.str import hash_utf8
-from bripy.bllb.logging import logger, DBG
 
-__all__ = ['URL', 'DNS', 'Server']
+__all__ = ["URL", "DNS", "Server"]
 
 AnyStr = TypeVar("AnyStr", str, bytes)
 
@@ -102,8 +102,7 @@ class URL:
         Build url with blank scheme.
         Split url into 5 tuple.
         """
-        return canonicalize_url(
-            urlunsplit([""] + list(urlsplit(self.url.lower())[1:])))
+        return canonicalize_url(urlunsplit([""] + list(urlsplit(self.url.lower())[1:])))
 
     @property
     def bhash(self) -> str:
@@ -141,37 +140,39 @@ class URL:
         if include_fragments:
             fragment = u.fragment
         return canonicalize_url(  # rebuild url with blank scheme
-            urlunsplit((scheme, netloc, path, query, fragment)))
+            urlunsplit((scheme, netloc, path, query, fragment))
+        )
 
     def check(self) -> bool:
         """Various checks for URL."""
         url = self.url
-        DBG('validating url: {}'.format(url))
+        DBG(f"validating url: {url}")
         if not validators.url(url):
-            logger.info('url did not validate')
+            logger.info("url did not validate")
             return False
-        DBG('checking dns')
+        DBG("checking dns")
         if not DNS().validate_domain(self.domain):
-            logger.info('unable to resolve dns')
+            logger.info("unable to resolve dns")
             return False
-        DBG('requesting http head')
+        DBG("requesting http head")
         try:
             r = requests.head(url, allow_redirects=True)
             r.raise_for_status()
         except Exception:
-            logger.info('http head request failed', exc_info=True)
+            logger.info("http head request failed", exc_info=True)
             return False
         else:
-            DBG('no connection error')
+            DBG("no connection error")
             if r.ok:
                 return True
             else:
-                logger.info('response not ok: {}'.format(r))
+                logger.info(f"response not ok: {r}")
                 return False
 
     @property
-    def query_params(self) -> Dict[str, str]:
+    def query_params(self) -> dict[str, str]:
         return self.bolton.qp
+
 
 @attr.s(repr=False)
 class Server:
@@ -281,9 +282,9 @@ class DNS:
 
     def __attrs_post_init__(self) -> None:
         """Filter nonresponsive nameservers out."""
-        check_ns = partial(Server.check_server,
-                           port=self.DNS_PORT,
-                           timeout=self.timeout)
+        check_ns = partial(
+            Server.check_server, port=self.DNS_PORT, timeout=self.timeout
+        )
         if self.ns is not None:
             ns = list(filter(check_ns, self.ns))
             if ns:
@@ -328,13 +329,14 @@ class DNS:
         return False
 
     @staticmethod
-    def get_psl() -> Set[str]:
+    def get_psl() -> set[str]:
         """Get public suffix list."""
-        with urlopen('https://publicsuffix.org/list/public_suffix_list.dat'
-                     ) as file:
-            psl = set({
-                line
-                for line in file.read().decode('utf-8').splitlines()
-                if line and line[:2] != '//'
-            })
+        with urlopen("https://publicsuffix.org/list/public_suffix_list.dat") as file:
+            psl = set(
+                {
+                    line
+                    for line in file.read().decode("utf-8").splitlines()
+                    if line and line[:2] != "//"
+                }
+            )
         return psl

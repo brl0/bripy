@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
+"""Read more about conftest.py under:
+    - https://docs.pytest.org/en/stable/fixture.html
+    - https://docs.pytest.org/en/stable/writing_plugins.html
 """
-    Dummy conftest.py for bripy.
 
-    Read more about conftest.py under:
-    https://pytest.org/latest/plugins.html
-"""
 import pytest
 
 
 class DEFAULTS:
     RUNS = 1
+
 
 @pytest.fixture
 def RANGES():

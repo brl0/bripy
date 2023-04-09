@@ -4,12 +4,13 @@
 import os
 import sys
 
+from bripy.ubrl.ubrl import DNS, URL, Server
+
 # lib_path = r"..\\src\\ubrl"
 # lib_path_abs = os.path.abspath(
 #     os.path.join(os.path.dirname(__file__), lib_path))
 # sys.path.insert(0, lib_path_abs)
 
-from bripy.ubrl.ubrl import DNS, Server, URL
 
 # lib_path = r"..\\ubrl\\bllb"
 # lib_path_abs = os.path.abspath(

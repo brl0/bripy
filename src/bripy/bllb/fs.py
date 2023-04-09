@@ -1,56 +1,63 @@
-
-from datetime import datetime
 import inspect
-from operator import methodcaller
 import os
+from datetime import datetime
+from operator import methodcaller
 from pathlib import Path
 
-from fsspec import get_fs_token_paths
 import pandas as pd
+from fsspec import get_fs_token_paths
 
 from bripy.bllb.file import md5_blocks, md5_blocks_fs
+from bripy.bllb.logging import DBG, logger
 from bripy.bllb.str import hash_utf8, multisplit
-from bripy.bllb.logging import logger, DBG
 
 
 def get_stat(path, opt_md5=True) -> dict:
     DBG(path)
     try:
         path = Path(path)
-        info = dict([
-            _ for _ in inspect.getmembers(path.lstat())
-            if not _[0].startswith('_') and not inspect.isbuiltin(_[1])
-        ])
+        info = dict(
+            [
+                _
+                for _ in inspect.getmembers(path.lstat())
+                if not _[0].startswith("_") and not inspect.isbuiltin(_[1])
+            ]
+        )
         info.update(
-            dict([(_[0], str(_[1])) for _ in inspect.getmembers(path)
-                  if '__' not in _[0] and '<' not in str(_[1])]))
+            {
+                _[0]: str(_[1])
+                for _ in inspect.getmembers(path)
+                if "__" not in _[0] and "<" not in str(_[1])
+            }
+        )
         info.update(
-            dict([(str(_[0]), methodcaller(_[0])(path))
-                  for _ in inspect.getmembers(path)
-                  if _[0].startswith('is_') and _[0] != 'is_mount']))
-        info['path'] = str(path)
-        info['path_hash'] = hash_utf8(str(path))
-        info['absolute_path'] = str(path.resolve())
+            {
+                str(_[0]): methodcaller(_[0])(path)
+                for _ in inspect.getmembers(path)
+                if _[0].startswith("is_") and _[0] != "is_mount"
+            }
+        )
+        info["path"] = str(path)
+        info["path_hash"] = hash_utf8(str(path))
+        info["absolute_path"] = str(path.resolve())
         f_times = dict()
         for key, value in info.items():
-            if key[-4:] == 'time':
-                f_times[f'f_{key}'] = datetime.fromtimestamp(value)
+            if key[-4:] == "time":
+                f_times[f"f_{key}"] = datetime.fromtimestamp(value)
         info.update(f_times)
         if opt_md5:
             if not path.is_dir():
                 try:
                     md5_hash = md5_blocks(path)
-                    info['md5'] = md5_hash
+                    info["md5"] = md5_hash
                 except Exception as error:
-                    logger.warning(f'Could not hash item: {str(path)}\n{error}')
+                    logger.warning(f"Could not hash item: {str(path)}\n{error}")
             else:
-                DBG(
-                    f'Item is a directory and will not be hashed.  {str(path)}'
-                )
+                DBG(f"Item is a directory and will not be hashed.  {str(path)}")
         return info
     except Exception as error:
         logger.warning(error)
-        return {'path': str(path)}
+        return {"path": str(path)}
 
 
 def get_stat_fs(path, opt_md5=False) -> dict:
@@ -66,13 +73,11 @@ def get_stat_fs(path, opt_md5=False) -> dict:
         if not fs.isdir(path):
             try:
                 md5_hash = md5_blocks_fs(path)
-                info['md5'] = md5_hash
+                info["md5"] = md5_hash
             except Exception as error:
-                logger.warning(f'Could not hash item: {str(path)}\n{error}')
+                logger.warning(f"Could not hash item: {str(path)}\n{error}")
         else:
-            DBG(
-                f'Item is a directory and will not be hashed.  {str(path)}'
-            )
+            DBG(f"Item is a directory and will not be hashed.  {str(path)}")
     return info
 
 
@@ -92,7 +97,7 @@ def rglob(path):
         fs, token, paths = get_fs_token_paths(path)
         protocol = get_protocol(fs)
         if fs.isdir(path):
-            return (f"{protocol}://{_}" for _ in fs.glob(Path(path)/'**'))
+            return (f"{protocol}://{_}" for _ in fs.glob(Path(path) / "**"))
         return path
     except Exception as error:
         logger.warning(error)

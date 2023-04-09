@@ -3,7 +3,7 @@
 
 import pytest
 
-from .context import DNS, Server, URL
+from .context import DNS, URL, Server
 
 
 def test_import():
@@ -65,9 +65,7 @@ def test_bad_ip():
 test_domains = {"IPv4": "ipv4.google.com", "IPv6": "ipv6.google.com"}
 
 
-@pytest.mark.parametrize("domain",
-                         test_domains.values(),
-                         ids=list(test_domains.keys()))
+@pytest.mark.parametrize("domain", test_domains.values(), ids=list(test_domains.keys()))
 def test_domain(domain):
     """Test known domain."""
     dns = DNS()
@@ -109,9 +107,7 @@ def test_server_ip(target):
     assert server.ping()
 
 
-@pytest.mark.parametrize("ips",
-                         DNS.PROVIDERS.values(),
-                         ids=list(DNS.PROVIDERS.keys()))
+@pytest.mark.parametrize("ips", DNS.PROVIDERS.values(), ids=list(DNS.PROVIDERS.keys()))
 def test_dns_server_lists(ips):
     """Test known DNS servers."""
     for ip in ips:

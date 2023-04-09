@@ -3,6 +3,7 @@
 # pylint: disable=unused-wildcard-import, undefined-variable
 
 import sys
+
 import pytest
 from scripttest import TestFileEnvironment as FileEnvironment
 

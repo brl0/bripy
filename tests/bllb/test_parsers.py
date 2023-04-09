@@ -2,17 +2,15 @@
 
 from pathlib import Path
 
-from click.testing import CliRunner
 import dominate
-from dominate.tags import *
 import pytest
-
+from click.testing import CliRunner
+from dominate.tags import *
 from fpdf import FPDF
 
-from bripy.bllb.bllb_parsers import (HTML_Parser, PDF_Parser, html2txt,
-                                     pdf2txt)
+from bripy.bllb.bllb_parsers import HTML_Parser, PDF_Parser, html2txt, pdf2txt
 
-TEST_TEXT = 'This is test text.'
+TEST_TEXT = "This is test text."
 
 
 @pytest.fixture(scope="session")
@@ -21,9 +19,9 @@ def pdf_file(tmpdir_factory):
     fn = tmpdir_factory.mktemp("data").join("test.pdf")
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font('Arial', 'B', 16)
+    pdf.set_font("Arial", "B", 16)
     pdf.cell(40, 10, TEST_TEXT)
-    pdf.output(fn, 'F')
+    pdf.output(fn, "F")
     return fn
 
 
@@ -40,7 +38,7 @@ def html_file(tmpdir_factory):
     doc = dominate.document()
     with doc:
         with div():
-            attr(cls='body')
+            attr(cls="body")
             p(TEST_TEXT)
     fn = tmpdir_factory.mktemp("data").join("test.html")
     Path(fn).write_text(doc.render())

@@ -1,20 +1,19 @@
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import sys
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import Manager
 from pathlib import Path
 from time import perf_counter, sleep
-from multiprocessing import Manager
-import sys
 
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, MetaData
-from sqlalchemy.exc import IntegrityError
 import pandas as pd
+from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy.exc import IntegrityError
 from tqdm import tqdm
 
 from bripy.examinator.examinator import get_stat, md5_blocks
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code'
-output = r'fileinfo.csv'
-database = r'big_glob.db'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code"
+output = r"fileinfo.csv"
+database = r"big_glob.db"
 
 EXECUTOR = ThreadPoolExecutor
 MAX_WORKERS = 8
@@ -32,27 +31,25 @@ def worker(q, results):
         path = Path(item)
         info = get_stat(item)
         if path.is_file():
-            info['md5'] = md5_blocks(item)
+            info["md5"] = md5_blocks(item)
         results.append(info)
         q.task_done()
     return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     def main():
-        engine = create_engine(f'sqlite:///{database}')
+        engine = create_engine(f"sqlite:///{database}")
         if not Path(database).exists():
             metadata = MetaData()
-            files = Table('files', metadata,
-                          Column('path', String, index=True, primary_key=True))
+            files = Table(
+                "files", metadata, Column("path", String, index=True, primary_key=True)
+            )
             metadata.create_all(engine)
         else:
             metadata = MetaData(engine)
-            files = Table('files',
-                          metadata,
-                          autoload=True,
-                          autoload_with=engine)
+            files = Table("files", metadata, autoload=True, autoload_with=engine)
         connection = engine.connect()
 
         with Manager() as manager:
@@ -63,9 +60,9 @@ if __name__ == '__main__':
                 for _ in range(MAX_WORKERS):
                     future = executor.submit(worker, q, results)
                     futures.append(future)
-                for path in tqdm(Path(basepath).rglob('*')):
+                for path in tqdm(Path(basepath).rglob("*")):
                     try:
-                        connection.execute(files.insert({'path': str(path)}))
+                        connection.execute(files.insert({"path": str(path)}))
                     except IntegrityError:
                         pass
                     else:
@@ -78,10 +75,10 @@ if __name__ == '__main__':
                 success = all([future.result() for future in futures])
                 if results:
                     df = pd.DataFrame.from_records(results)
-                    df = df.set_index('path_hash')
+                    df = df.set_index("path_hash")
                     print(df.info())
                     df.to_csv(output)
-        print('FIN', success, perf_counter())
+        print("FIN", success, perf_counter())
         return 0 if success else 1
 
     sys.exit(main())
