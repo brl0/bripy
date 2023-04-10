@@ -29,7 +29,6 @@ dependencies = [
     "konch",
     "libtmux",
     "loguru",
-    "loguru",
     "multiping",
     "numpy",
     "pandas",
@@ -48,12 +47,37 @@ dependencies = [
     "w3lib",
     "watermark",
     "werkzeug",
+    "bandit",
+    "black",
+    "codecov",
+    "coverage",
+    "datashader",
+    "dominate",
+    "flake8",
+    "fpdf",
+    "holoviews",
+    "hypothesis-auto",
+    "ipympl",
+    "isort",
+    "mypy",
+    "pdvega",
+    "prospector",
+    "pycodestyle",
+    "pydocstyle",
+    "pylama",
+    "pytest",
+    "pytest-cov",
+    "python-slugify",
+    "scripttest",
+    "setuptools",
+    "Sphinx",
+    "watermark",
+    "yapf",
 ]
 
 [project.optional-dependencies]
 all = [
     "bandit",
-    "black",
     "black",
     "codecov",
     "coverage",
@@ -89,9 +113,11 @@ dev = [
 jupyter = [
     "datashader",
     "holoviews",
+    "hvplot",
     "ipympl",
     "pdvega",
     "python-slugify",
+    "seaborn",
     "watermark",
 ]
 linters = [
@@ -128,7 +154,7 @@ Homepage = "https://github.com/brl0/bripy/"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "bripy/_version.py"
+version-file = "src/bripy/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = [

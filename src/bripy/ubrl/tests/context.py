@@ -17,7 +17,7 @@ from bripy.ubrl.ubrl import DNS, URL, Server
 #     os.path.join(os.path.dirname(__file__), lib_path))
 # sys.path.insert(0, lib_path_abs)
 
-# from bripy.bllb.bllb import *  # noqa
+# from bripy.bllb import *  # noqa
 # from bripy.bllb.logging import *  # noqa
 # from bripy.bllb.bllb_file import *  # noqa
 # from bripy.bllb.str import *  # noqa

@@ -7,7 +7,7 @@ import sys
 import pytest
 from scripttest import TestFileEnvironment as FileEnvironment
 
-from bripy.bllb.bllb import *
+from bripy.bllb.tests import *
 
 env = FileEnvironment(ignore_hidden=False)
 
