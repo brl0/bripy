@@ -1,3 +1,5 @@
+import logging
+import os
 import sys
 
 if sys.version_info[:2] >= (3, 8):
@@ -14,3 +16,18 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+
+_DEBUG = True
+if _DEBUG or os.getenv("_DEBUG"):
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format=(
+            "%(asctime)s "
+            "%(name)s "
+            "[%(levelname)s] "
+            "%(module)s.%(funcName)s:%(lineno)d | "
+            "%(message)s"
+        ),
+        datefmt="%H:%M:%S",
+    )

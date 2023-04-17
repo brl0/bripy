@@ -9,6 +9,10 @@
 
 import logging
 import sys
+from collections import ChainMap
+from collections.abc import Iterable
+from functools import partial, wraps
+from pprint import pformat
 from typing import Optional, Union
 from warnings import filterwarnings
 
@@ -137,6 +141,108 @@ def disable_std_logging(logger: object | None = None) -> object:
         logger = logging.getLogger("bllb")
     logging.disable(DISABLE_LVL)
     return logger
+
+
+def pformat_kwargs(msg, *args, **kwargs):
+    line = " " + ("-" * 10) + " "
+    section = line + msg + line
+    msgs = [section]
+    for key, val in ChainMap(dict(enumerate(args)), kwargs).items():
+        typ = type(val)
+        if isinstance(val, Iterable) and not isinstance(val, str):
+            val = f"\n{pformat(val)}"
+        msgs.append(f"{key} = ({typ}) {val}")
+    msgs.append(section)
+    out = "\n".join(msgs)
+    out = f"\n{out}\n"
+    return out
+
+
+def debug(msg, *args, stacklevel=1, **kwargs):
+    try:
+        logging.debug(
+            "%s",
+            pformat_kwargs(msg, *args, **kwargs),
+            stacklevel=stacklevel + 1,
+        )
+    except Exception as error:
+        logging.exception("Error logging %s: %s", msg, error)
+
+
+def debugger(func=None, stacklevel=2):
+    if func is None:
+        kw = {}
+        if stacklevel != 2:
+            kw["stacklevel"] = stacklevel
+        return partial(debugger, **kw)
+    name = getattr(func, "__name__", "function")
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        _stacklevel = stacklevel + 1
+        debug(f"{name} args, kwargs", *args, **kwargs, stacklevel=_stacklevel)
+        results = func(*args, **kwargs)
+        debug(f"{name} results", results, stacklevel=_stacklevel)
+        return results
+
+    return wrapper
+
+
+def class_debugger(func=None, stacklevel=2):
+    if func is None:
+        kw = {}
+        if stacklevel != 2:
+            kw["stacklevel"] = stacklevel
+        return partial(class_debugger, **kw)
+    if not callable(func):
+        return func
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        _stacklevel = stacklevel + 1
+        if args:
+            args = list(args)
+            args.pop(0)
+        return debugger(func, stacklevel=_stacklevel)(*args, **kwargs)
+
+    return wrapper
+
+
+def debug_class(cls):
+    for _ in dir(cls):
+        logging.debug("Processing attr: %s", _)
+        if _ not in {
+            *cls.__slots__,
+            "__init__",
+            "__class__",
+            "__str__",
+            "__repr__",
+            "_str",
+            "__hash__",
+            "_format_parsed_parts",
+            "path",
+            "__getattr__",
+            "__getattribute__",
+            "__setstate__",
+            "__reduce__",
+            "_default_accessor",
+            "_default_flavour",
+        }:
+            logging.debug("Considering attr: %s", _)
+            attr = getattr(cls, _)
+            logging.debug("Type attr: %s", type(attr))
+            if callable(attr) and not isinstance(attr, property):
+                if _ in {
+                    "__new__",
+                    "_from_parts",
+                    "_from_parsed_parts",
+                    "_from_path",
+                }:
+                    logging.debug("Decorating attr: %s", _)
+                    setattr(cls, _, debugger(attr, stacklevel=2))
+                else:
+                    logging.debug("Consider decorating attr: %s", _)
+    return cls
 
 
 @click.command()

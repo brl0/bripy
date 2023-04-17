@@ -161,7 +161,121 @@ include = [
     "/src",
 ]
 
-[tool.setuptools_scm]
-# For smarter version schemes and other configuration options,
-# check out https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
+[tool.black]
+line-length               = 88
+skip-string-normalization = false
+target_version            = ['py310', 'py311', 'py38', 'py39']
+
+[tool.isort]
+color_output                   = true
+ensure_newline_before_comments = true
+force_single_line              = false
+include_trailing_comma         = true
+known_local_folder             = ["src/bripy"]
+known_third_party              = []
+line_length                    = 88
+lines_after_imports            = 2
+lines_before_imports           = 1
+only_modified                  = true
+profile                        = "black"
+skip_gitignore                 = true
+star_first                     = true
+use_parentheses                = true
+verbose                        = false
+
+[tool.pytest.ini_options]
+# Options for py.test:
+# Specify command line options as you would do when invoking py.test directly.
+# e.g. --cov-report html (or xml) for html/xml output or --junitxml junit.xml
+# in order to write a coverage file that can be read by Jenkins.
+
+addopts = [
+  "--code-highlight=yes",
+  "--color=yes",
+  "--continue-on-collection-errors",
+  "-ra",
+
+  # ## coverage
+  # "-p",
+  # "pytest_cov",
+  # "--cov=src",
+  # "--cov-report=term-missing",
+  # "--no-cov-on-fail",
+  # "--cov-report=html",
+
+  # ## debug and verbosity options
+  # "-q",
+  # "--disable-warnings",
+  # "--log-level=WARNING",
+  # "--no-header",
+  "--log-level=DEBUG",
+  "-v",
+  "-v",
+  "-v",
+
+  ## test selection
+  # "--exitfirst",
+  # "--last-failed-no-failures=all",
+  # "--last-failed",
+  "--new-first",
+  # "--runxfail",
+
+  ## output options
+  # "--capture=tee-sys",  # fd|sys|no|tee-sys
+  # "--show-capture=stdout", # {no,stdout,stderr,log,all}
+
+  # ## pytest-print
+  "--print-relative-time",
+  "--showlocals",
+  "-p",
+  "pytest_print",
+  # "--print",
+
+  # ## other options
+  # "--assert=plain",  # rewrite (default), plain
+  # "-n=auto",  # xdist parallel testing
+]
+markers = [
+  "hdfs: mark test as hdfs",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+norecursedirs = [
+  "*.egg-info",
+  ".git",
+  ".github",
+  ".hypothesis",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pytest_cache",
+  ".ropeproject",
+  ".ruff_cache",
+  ".tox",
+  ".vscode",
+  "__pycache__",
+  "build",
+  "dist",
+  "docs",
+  "notebooks",
+]
+pythonpath = ["."]
+testpaths = ["src"]
+xfail_strict = false
+log_format = "%(asctime)s %(name)s [%(levelname)s] %(module)s.%(funcName)s:%(lineno)d | %(message)s"
+log_date_format = "%H:%M:%S"
+
+[tool.coverage.report]
+exclude_lines = [
+  "if TYPE_CHECKING:",
+  "if __name__ == .__main__.:",
+  "pragma: nocover",
+  "raise NotImplementedError",
+]
+ignore_errors = true
+omit = ["notebooks/*"]
+show_missing = true
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["src"]

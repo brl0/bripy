@@ -21,7 +21,7 @@ dependencies:
     - numpy
     - pandas
     - pdvega
-    - primesieve
+    - python-primesieve
     - psutil
     - pyscaffold
     - python-slugify
@@ -60,8 +60,10 @@ dependencies:
     - yapf
 
     - pip:
+        - bash
+        - hypothesis-auto
+        - hypothesis>6  # for hypothesis-auto
         - konch
         - libtmux
+        - primesieve  # for python-primesieve
         - pypdf4
-        - hypothesis-auto
-        - hypothesis>6
