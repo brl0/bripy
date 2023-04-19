@@ -102,7 +102,9 @@ class URL:
         Build url with blank scheme.
         Split url into 5 tuple.
         """
-        return canonicalize_url(urlunsplit([""] + list(urlsplit(self.url.lower())[1:])))
+        return canonicalize_url(
+            urlunsplit([""] + list(urlsplit(self.url.casefold())[1:]))
+        )
 
     @property
     def bhash(self) -> str:
