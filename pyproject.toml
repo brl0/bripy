@@ -236,7 +236,6 @@ addopts = [
   # "-n=auto",  # xdist parallel testing
 ]
 markers = [
-  "hdfs: mark test as hdfs",
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 norecursedirs = [
