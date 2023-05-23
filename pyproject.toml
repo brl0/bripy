@@ -33,6 +33,7 @@ dependencies = [
     "numpy",
     "pandas",
     "pdvega",
+    "polars",
     "primesieve",
     "psutil",
     "PyPDF4",
