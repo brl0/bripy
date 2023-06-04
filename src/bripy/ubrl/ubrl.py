@@ -23,7 +23,7 @@ from werkzeug.urls import url_fix
 from bripy.bllb.log import DBG, logger
 from bripy.bllb.str import hash_utf8
 
-__all__ = ["URL", "DNS", "Server"]
+__all__ = ["URL", "DNS", "Server", "get_ip_version"]
 
 AnyStr = TypeVar("AnyStr", str, bytes)
 
@@ -234,16 +234,13 @@ class Server:
 
     def ping(self, tries=1, timeout=1) -> bool:
         """Return true if server is reachable via ping."""
-        try:
-            mp = MultiPing([self.ip])
-            mp.send()
-            for _ in range(tries):
-                responses, _ = mp.receive(timeout)
-                if responses:
-                    return True
-            return False
-        except Exception:
-            return False
+        mp = MultiPing([self.ip])
+        mp.send()
+        for _ in range(tries):
+            responses, _ = mp.receive(timeout)
+            if responses:
+                return True
+        return False
 
     @staticmethod
     def check_server(server, port: int, timeout: int) -> bool:
@@ -257,15 +254,15 @@ class DNS:
 
     DNS_PORT = 53
     PROVIDERS = {
-        "CLOUDFLARE_DNS": ["1.1.1.1", "1.0.0.1"],
-        "CLOUDFLARE_DNSv6": ["2606:4700:4700::1111", "2606:4700:4700::1001"],
-        "GOOGLE_DNS": ["8.8.8.8", "8.8.4.4"],
-        "GOOGLE_DNSv6": ["2001:4860:4860::8888", "2001:4860:4860::8844"],
-        "OPENDNS": ["208.67.222.222", "208.67.220.220"],
-        "NORTON_CONNECTSAFE": ["199.85.126.10", "199.85.127.10"],
-        "COMODO_DNS": ["8.26.56.26", "8.20.247.20"],
-        "QUAD9_DNS": ["9.9.9.9", "149.112.112.112"],
-        "VERISIGN_DNS": ["64.6.64.6", "64.6.65.6"],
+        "CLOUDFLARE_DNS": ("1.1.1.1", "1.0.0.1"),
+        "CLOUDFLARE_DNSv6": ("2606:4700:4700::1111", "2606:4700:4700::1001"),
+        "GOOGLE_DNS": ("8.8.8.8", "8.8.4.4"),
+        "GOOGLE_DNSv6": ("2001:4860:4860::8888", "2001:4860:4860::8844"),
+        "OPENDNS": ("208.67.222.222", "208.67.220.220"),
+        "NORTON_CONNECTSAFE": ("199.85.126.10", "199.85.127.10"),
+        "COMODO_DNS": ("8.26.56.26", "8.20.247.20"),
+        "QUAD9_DNS": ("9.9.9.9", "149.112.112.112"),
+        "VERISIGN_DNS": ("64.6.64.6", "64.6.65.6"),
     }
     DEFAULT_DNS = PROVIDERS["GOOGLE_DNSv6"] + PROVIDERS["GOOGLE_DNS"]
 
@@ -285,7 +282,9 @@ class DNS:
     def __attrs_post_init__(self) -> None:
         """Filter nonresponsive nameservers out."""
         check_ns = partial(
-            Server.check_server, port=self.DNS_PORT, timeout=self.timeout
+            Server.check_server,
+            port=self.DNS_PORT,
+            timeout=self.timeout,
         )
         if self.ns is not None:
             ns = list(filter(check_ns, self.ns))
@@ -304,14 +303,14 @@ class DNS:
     def query_v4(self, domain) -> list:
         """Perform IPv4 DNS query, return list of string answers."""
         try:
-            return [a.to_text() for a in self.resolver.query(domain, "A")]
+            return [a.to_text() for a in self.resolver.resolve(domain, "A")]
         except Exception:
             return []
 
     def query_v6(self, domain) -> list:
         """Perform IPv6 DNS query, return list of string answers."""
         try:
-            return [a.to_text() for a in self.resolver.query(domain, "AAAA")]
+            return [a.to_text() for a in self.resolver.resolve(domain, "AAAA")]
         except Exception:
             return []
 
@@ -342,3 +341,11 @@ class DNS:
                 }
             )
         return psl
+
+
+def get_ip_version(address):
+    """Return IP version of address."""
+    try:
+        return ip_address(address).version
+    except ValueError:
+        return None

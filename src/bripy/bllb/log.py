@@ -43,21 +43,23 @@ def setup_logging(
         else:
             lvl = DISABLE_LVL
     if not std_lib:
+        loguru_error = None
         try:
             if enable:
                 logger = enable_loguru(lvl=lvl, enqueue=loguru_enqueue)
             else:
                 logger = disable_loguru()
         except Exception as error:
-            loguru_error = True
+            loguru_error = error
             print(error)
     if std_lib or loguru_error:
         if enable:
             logger = enable_std_logging(lvl=lvl)
-            if loguru_error:
+            if not std_lib and loguru_error:
                 logger.warning(
                     "Error importing loguru, using standard library logging."
                 )
+                logger.error("Loguru error: %s", loguru_error)
         else:
             logger = disable_std_logging()
     logger.debug(
@@ -87,7 +89,10 @@ def enable_loguru(
     """Enable loguru or return new loguru logger."""
     from loguru import logger
 
-    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+    except AttributeError:
+        pass
     logger.remove()
     logger.add(
         sys.stdout,
