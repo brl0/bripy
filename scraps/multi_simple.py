@@ -1,11 +1,12 @@
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import Manager
 from pathlib import Path
 from time import perf_counter, sleep
-from multiprocessing import Manager
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code"
 EXECUTOR = ThreadPoolExecutor
 MAX_WORKERS = 40
+
 
 def worker(q, results):
     i = 0
@@ -26,7 +27,7 @@ def worker(q, results):
     return i
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     total = 0
     with Manager() as manager:
         q = manager.JoinableQueue()
@@ -42,4 +43,4 @@ if __name__ == '__main__':
                 q.put(None)
             total = sum([future.result() for future in futures])
             print(len(results))
-    print('FIN', total, perf_counter())
+    print("FIN", total, perf_counter())

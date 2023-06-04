@@ -6,34 +6,32 @@ from pathlib import Path
 
 from fsspec import get_fs_token_paths
 
-from bripy.bllb.logging import logger, DBG
+from bripy.bllb.log import DBG, logger
 
 
 def gen_lines(filename: str):
     """Generate clean lines from txt."""
-    with open(filename, "r", errors='ignore') as file:
+    with open(filename, errors="ignore") as file:
         for line in file:
             yield line.splitlines()[0]
 
 
 def get_lines(filename: str, line_num, count=1):
     """Get lines."""
-    with open(filename, "r", errors='ignore') as file:
-        return [
-            _.splitlines()[0] for _ in islice(file, line_num, line_num + count)
-        ]
+    with open(filename, errors="ignore") as file:
+        return [_.splitlines()[0] for _ in islice(file, line_num, line_num + count)]
 
 
 def get_txt(filepath):
     """Get file as text."""
-    with open(filepath, 'r', encoding="ISO-8859-1", errors='ignore') as file:
+    with open(filepath, encoding="ISO-8859-1", errors="ignore") as file:
         return file.read()
 
 
 def try_read(filename):  # pragma: no cover
     """Try to open file and read lines one at a time."""
     try:  # try to open
-        with open(filename, "r", errors='ignore') as file:
+        with open(filename, errors="ignore") as file:
             _ = True  # False
             try:  # try to get next line and print
                 logger.debug("trying")
@@ -56,7 +54,7 @@ def try_read(filename):  # pragma: no cover
                 pass
     except Exception:  # error opening
         DBG("error opening")
-        yield ''
+        yield ""
         pass
     else:  # no error opening
         DBG("no error opening")
@@ -71,35 +69,33 @@ def md5_blocks(path, blocksize=1024 * 2048) -> str:
     if not path.is_dir():
         try:
             hasher = md5()
-            with path.open('rb') as file:
+            with path.open("rb") as file:
                 block = file.read(blocksize)
                 while len(block) > 0:
                     hasher.update(block)
                     block = file.read(blocksize)
             return hasher.hexdigest()
         except Exception as error:
-            logger.warning(
-                f'Error trying to hash item: {str(path)}\nError:\n{error}')
+            logger.warning(f"Error trying to hash item: {str(path)}\nError:\n{error}")
             return
     else:
-        DBG(f'Item is a directory and will not be hashed.  {str(path)}')
+        DBG(f"Item is a directory and will not be hashed.  {str(path)}")
         return
 
 
 def md5_blocks_fs(path, blocksize=1024 * 2048) -> str:
     fs, token, paths = get_fs_token_paths(path)
     if fs.isdir(path):
-        DBG(f'Item is a directory and will not be hashed.  {str(path)}')
+        DBG(f"Item is a directory and will not be hashed.  {str(path)}")
         return
     try:
         hasher = md5()
-        with fs.open(path, 'rb') as file:
+        with fs.open(path, "rb") as file:
             block = file.read(blocksize)
             while len(block) > 0:
                 hasher.update(block)
                 block = file.read(blocksize)
         return hasher.hexdigest()
     except Exception as error:
-        logger.warning(
-            f'Error trying to hash item: {str(path)}\nError:\n{error}')
+        logger.warning(f"Error trying to hash item: {str(path)}\nError:\n{error}")
         return

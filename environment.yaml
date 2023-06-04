@@ -1,0 +1,69 @@
+name: bripy
+channels:
+    - conda-forge
+dependencies:
+    - python
+    - hatchling
+    - hatch-vcs
+    - pip
+
+    - attrs
+    - bash
+    - boltons
+    - click
+    - dask-core
+    - dnspython
+    - fsspec
+    - importlib-metadata  # [py<38]
+    - ipympl
+    - loguru
+    - multiping
+    - numpy
+    - pandas
+    - pdvega
+    - python-primesieve
+    - psutil
+    - pyscaffold
+    - python-slugify
+    - requests
+    - spacy
+    - tldextract
+    - tqdm
+    - universal_pathlib
+    - validators
+    - w3lib
+    - watermark
+    - werkzeug
+    - bandit
+    - black
+    - codecov
+    - coverage
+    - datashader
+    - dominate
+    - flake8
+    - fpdf
+    - holoviews
+    - hvplot
+    - hypothesis
+    - isort
+    - mypy
+    - prospector
+    - pycodestyle
+    - pydocstyle
+    - pylama
+    - pytest
+    - pytest-cov
+    - scripttest
+    - seaborn
+    - setuptools
+    - sphinx
+    - yapf
+
+    - pip:
+        - bash
+        - hypothesis-auto
+        - hypothesis>6  # for hypothesis-auto
+        - konch
+        - libtmux
+        - primesieve  # for python-primesieve
+        - pypdf4

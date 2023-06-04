@@ -34,6 +34,7 @@ def main(path):
     pprint(files)
     print(df)
 
+
 if __name__ == "__main__":
     logger = logging.getLogger()
     logger.setLevel("DEBUG")

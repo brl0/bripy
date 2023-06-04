@@ -1,18 +1,20 @@
+import sys
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from hashlib import md5
-from multiprocessing import JoinableQueue as Queue, freeze_support
+from multiprocessing import JoinableQueue as Queue
+from multiprocessing import freeze_support
 from pathlib import Path
-from time import sleep, perf_counter
-import sys
+from time import perf_counter, sleep
 
-from sqlalchemy import create_engine
 import pandas as pd
+from sqlalchemy import create_engine
 
 MAX_WORKERS = 16
 EXECUTOR = ThreadPoolExecutor
 q = Queue()
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code\python'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code\python"
 q.put(basepath)
+
 
 def worker(item):
     path = Path(item)
@@ -24,12 +26,13 @@ def worker(item):
             hasher.update(path.read_bytes())
             return str(path), hasher.hexdigest()
         except:
-            return str(path), ''
+            return str(path), ""
     else:
-        return str(path), ''
+        return str(path), ""
+
 
 def main():
-    engine = create_engine('sqlite:///hash.db')
+    engine = create_engine("sqlite:///hash.db")
 
     with EXECUTOR(max_workers=MAX_WORKERS) as executor:
         futures = []
@@ -53,21 +56,22 @@ def main():
                         elif isinstance(result, list):
                             [*map(q.put, result)]
         q.join()
-        df = pd.DataFrame(hashes, columns=['path', 'md5'])
-        df.to_sql('files', con=engine)
+        df = pd.DataFrame(hashes, columns=["path", "md5"])
+        df.to_sql("files", con=engine)
         print(df.head())
         print(df.info())
-        print(f'dirs count: {len(dirs)}')
-        print(f'len_hashes: {len(hashes)}')
-        all_items = [*Path(basepath).rglob('*')]
-        print(f'all_items len: {len(all_items)}')
+        print(f"dirs count: {len(dirs)}")
+        print(f"len_hashes: {len(hashes)}")
+        all_items = [*Path(basepath).rglob("*")]
+        print(f"all_items len: {len(all_items)}")
         all_dirs = [*map(str, filter(Path.is_dir, all_items))]
-        print(f'all_dirs: {len(all_dirs)}')
+        print(f"all_dirs: {len(all_dirs)}")
         diff = set(all_dirs).symmetric_difference(dirs)
-        print(f'diff: {diff}')
+        print(f"diff: {diff}")
         return 0
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     freeze_support()
     print(perf_counter())
     result = main()

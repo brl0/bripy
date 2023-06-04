@@ -1,17 +1,19 @@
 """Various file parsers."""
 
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Union
 
 import click
 
-from bripy.bllb.str import stripper, fix_cr
+from bripy.bllb.str import fix_cr, stripper
+
 
 @click.group()
 def main() -> int:  # pragma: no cover
     """Group commands."""
     return 0  # noqa
+
 
 class HTML_Parser:
     """Class to hold HTML functions."""
@@ -19,7 +21,7 @@ class HTML_Parser:
     from bs4 import BeautifulSoup
     from bs4.element import Comment
 
-    html_parsers = ['lxml', 'html5lib', 'html.parser']
+    html_parsers = ["lxml", "html5lib", "html.parser"]
     HTML_PARSER = html_parsers[0]
 
     @classmethod
@@ -30,12 +32,12 @@ class HTML_Parser:
         https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
         """
         if element.parent.name in [
-                "style",
-                "script",
-                "head",
-                "title",
-                "meta",
-                "[document]",
+            "style",
+            "script",
+            "head",
+            "title",
+            "meta",
+            "[document]",
         ]:
             return False
         if isinstance(element, cls.Comment):
@@ -43,7 +45,7 @@ class HTML_Parser:
         return True
 
     @classmethod
-    def text_from_html(cls, body: Union[BeautifulSoup, str]) -> str:
+    def text_from_html(cls, body: BeautifulSoup | str) -> str:
         """
         Extract text from visible elements in HTML document.
 
@@ -60,7 +62,7 @@ class HTML_Parser:
         return "\n".join(texts)
 
     @classmethod
-    def all_text(cls, body: Union[BeautifulSoup, str]) -> str:
+    def all_text(cls, body: BeautifulSoup | str) -> str:
         """Extract text from webpage.
 
         https://stackoverflow.com/questions/328356
@@ -72,11 +74,12 @@ class HTML_Parser:
         # kill all script and style elements
         for script in soup(["script", "style"]):
             script.replace_with("<br>")  # rip it out
-        text = soup.get_text("<br>").replace('<br>', '\n')
+        text = soup.get_text("<br>").replace("<br>", "\n")
         text = fix_cr(text)
         # Strip whitespace, including non-breaking spaces '\xa0'
-        text = '\n'.join([stripper(line) for line in text.split('\n')
-                          if stripper(line)])
+        text = "\n".join(
+            [stripper(line) for line in text.split("\n") if stripper(line)]
+        )
         return text
 
 

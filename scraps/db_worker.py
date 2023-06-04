@@ -1,28 +1,26 @@
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import sys
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import Manager
 from pathlib import Path
 from time import perf_counter, sleep
-from multiprocessing import Manager
-import sys
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, MetaData
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 
 import pandas as pd
+from sqlalchemy import Column, MetaData, String, Table, create_engine, select
+from sqlalchemy.exc import IntegrityError
 
 from bripy.examinator.examinator import get_stat, md5_blocks
 
-basepath = r'C:\Users\b_r_l\OneDrive\Documents\code'
-output = 'fileinfo.csv'
-database = r'big_glob.db'
+basepath = r"C:\Users\b_r_l\OneDrive\Documents\code"
+output = "fileinfo.csv"
+database = r"big_glob.db"
 
 EXECUTOR = ThreadPoolExecutor
 MAX_WORKERS = 40
 
-engine = create_engine(f'sqlite:///{database}')
+engine = create_engine(f"sqlite:///{database}")
 connection = engine.connect()
 metadata = MetaData(engine)
-files = Table('files', metadata, autoload=True, autoload_with=engine)
+files = Table("files", metadata, autoload=True, autoload_with=engine)
 
 
 def db_worker(dbq, connection, table):
@@ -35,11 +33,12 @@ def db_worker(dbq, connection, table):
             dbq.task_done()
             return True
         try:
-            connection.execute(table.insert({'path': item}))
+            connection.execute(table.insert({"path": item}))
         except IntegrityError:  # Primary key already in database
             pass
         dbq.task_done()
     return False
+
 
 def worker(q, results):
     while q:
@@ -55,13 +54,13 @@ def worker(q, results):
         if path.is_dir():
             [*map(q.put, path.iterdir())]
         elif path.is_file():
-            info['md5'] = md5_blocks(item)
+            info["md5"] = md5_blocks(item)
         results.append(info)
         q.task_done()
     return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     def main():
         with Manager() as manager:
@@ -78,10 +77,10 @@ if __name__ == '__main__':
                     q.put(None)
                 q.join()
                 success = all([future.result() for future in futures])
-                df = pd.DataFrame.from_records(results).set_index('path_hash')
+                df = pd.DataFrame.from_records(results).set_index("path_hash")
             print(df.info())
             df.to_csv(output)
-        print('FIN', success, perf_counter())
+        print("FIN", success, perf_counter())
         return 0 if success else 1
 
     sys.exit(main())
