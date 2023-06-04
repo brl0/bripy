@@ -5,7 +5,7 @@ from operator import iconcat
 from pprint import pprint
 from typing import Any, List
 
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
 
 
 def flatten(lists: Iterable[Iterable[Any]]) -> list[Any]:

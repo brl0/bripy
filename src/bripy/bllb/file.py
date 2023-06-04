@@ -6,7 +6,7 @@ from pathlib import Path
 
 from fsspec import get_fs_token_paths
 
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
 
 
 def gen_lines(filename: str):

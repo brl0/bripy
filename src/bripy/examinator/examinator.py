@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 
 from bripy.bllb.file import md5_blocks
 from bripy.bllb.fs import get_dir, get_stat, rglob
-from bripy.bllb.logging import setup_logging
+from bripy.bllb.log import setup_logging
 
 LOG_ON = False
 LOG_LEVEL = "DEBUG"

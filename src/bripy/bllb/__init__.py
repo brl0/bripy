@@ -3,7 +3,8 @@
 
 import sys
 
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
+from bripy.py_info import print_sysinfo
 
 
 def setup_libtmux():

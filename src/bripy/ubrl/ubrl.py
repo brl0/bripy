@@ -20,7 +20,7 @@ from tldextract import extract as tldextract
 from w3lib.url import canonicalize_url
 from werkzeug.urls import url_fix
 
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
 from bripy.bllb.str import hash_utf8
 
 __all__ = ["URL", "DNS", "Server"]

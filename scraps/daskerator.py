@@ -20,7 +20,7 @@ import click
 import pandas as pd
 from distributed import Client, LocalCluster
 
-from bripy.bllb.logging import setup_logging
+from bripy.bllb.log import setup_logging
 from bripy.bllb.str import hash_utf8
 
 LOG_ON = False

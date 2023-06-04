@@ -10,7 +10,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import wordpunct_tokenize
 
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
 from bripy.bllb.str import *
 
 

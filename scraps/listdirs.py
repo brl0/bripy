@@ -6,7 +6,7 @@ from pathlib import Path
 from pprint import pprint
 from time import sleep
 
-from bripy.bllb.logging import get_dbg, setup_logging
+from bripy.bllb.log import get_dbg, setup_logging
 
 logger = setup_logging(True, "INFO", loguru_enqueue=True)
 DBG = get_dbg(logger)

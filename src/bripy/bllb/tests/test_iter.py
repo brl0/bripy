@@ -2,11 +2,12 @@
 from typing import List
 
 import hypothesis.strategies as st
-from conftest import DEFAULTS
 from hypothesis import given
 from hypothesis_auto import auto_pytest, auto_pytest_magic
 
 from bripy.bllb.iter import *
+from bripy.bllb.iter import cat, flatten, listerine, ppiter, reduce_iconcat
+from bripy.bllb.tests import DEFAULTS
 
 # FUNCTIONS = {
 #     striter: DEFAULTS.RUNS,

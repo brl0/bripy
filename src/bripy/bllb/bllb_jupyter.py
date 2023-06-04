@@ -4,7 +4,7 @@
 
 from warnings import filterwarnings
 
-from bripy.bllb.logging import DBG, logger, setup_logging
+from bripy.bllb.log import DBG, logger, setup_logging
 from bripy.bllb.tests import get_imports
 
 filterwarnings("ignore")

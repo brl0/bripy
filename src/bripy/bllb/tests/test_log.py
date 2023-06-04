@@ -4,20 +4,21 @@
 import logging
 import os
 import sys
+from pathlib import Path
 from warnings import filterwarnings
 
-import pytest
 from click.testing import CliRunner
 from scripttest import TestFileEnvironment as FileEnvironment
 
-from bripy.bllb.logging import disable_logging, disable_std_logging, main, setup_logging
+from bripy.bllb.log import disable_logging, disable_std_logging, main, setup_logging
 
 try:
     import loguru
 except ImportError:
     pass
 
-SCRIPT_PATH = r"..\..\..\src\bripy\bllb\bllb_logging.py"
+
+SCRIPT_PATH = Path(__file__).resolve().parent.parent / "log.py"
 sys.path.insert(0, os.path.abspath(os.path.dirname(SCRIPT_PATH)))
 
 ENV = FileEnvironment(ignore_hidden=False)
@@ -59,25 +60,27 @@ def test_std_logger(caplog):
 
 def test_cli():
     """Test main function via cli."""
-    res = ENV.run("python", SCRIPT_PATH, "--enable", expect_stderr=True)
+    res = ENV.run(sys.executable, SCRIPT_PATH, "--enable", expect_stderr=True)
     assert "loguru" in res.stdout
 
 
 def test_cli_disable():
     """Test cli with disable produces no output."""
-    res = ENV.run("python", SCRIPT_PATH, "--disable", expect_stderr=True)
+    res = ENV.run(sys.executable, SCRIPT_PATH, "--disable", expect_stderr=True)
     assert not res.stdout and not res.stderr
 
 
 def test_cli_stdlib():
     """Test using stdlib."""
-    res = ENV.run("python", SCRIPT_PATH, "--stdlib", expect_stderr=True)
+    res = ENV.run(sys.executable, SCRIPT_PATH, "--stdlib", expect_stderr=True)
     assert "standard" in res.stderr
 
 
 def test_cli_stdlib_disable():
     """Test stdlib with disable."""
-    res = ENV.run("python", SCRIPT_PATH, "--disable", "--stdlib", expect_stderr=True)
+    res = ENV.run(
+        sys.executable, SCRIPT_PATH, "--disable", "--stdlib", expect_stderr=True
+    )
     assert not res.stdout and not res.stderr
 
 

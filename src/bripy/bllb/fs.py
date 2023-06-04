@@ -8,7 +8,7 @@ import pandas as pd
 from fsspec import get_fs_token_paths
 
 from bripy.bllb.file import md5_blocks, md5_blocks_fs
-from bripy.bllb.logging import DBG, logger
+from bripy.bllb.log import DBG, logger
 from bripy.bllb.str import hash_utf8, multisplit
 
 
